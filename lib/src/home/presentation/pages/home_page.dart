@@ -102,6 +102,7 @@ class _HomePageState extends State<HomePage> {
                     itemCount: state.houses.docs.length,
                     itemBuilder: (context, index) {
                       final houseDetail=state.houses.docs[index].data();
+                      final id=state.houses.docs[index].id;
                       return HouseRowDetails(
                         onTap: () {
                           print(houseDetail);
@@ -112,6 +113,7 @@ class _HomePageState extends State<HomePage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => EditHomePage(
+                                id:id,
                                   house:houseDetail),
                             ),
                           );

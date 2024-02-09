@@ -38,6 +38,12 @@ class HouseRowDetails extends StatelessWidget {
                         fit: BoxFit.cover,
                         height: 120,
                         width: 100,
+                        errorBuilder:(_,__,___){
+                          return const SizedBox(
+                            height: 120,
+                        width: 100,
+                          );
+                        } ,
                       )),
                   Space().width(
                     context,

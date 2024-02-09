@@ -14,7 +14,6 @@ import 'package:house_rental_admin/core/usecase/usecase.dart';
 import 'package:house_rental_admin/core/widgets/bottom_sheet.dart';
 import 'package:house_rental_admin/locator.dart';
 import 'package:house_rental_admin/src/authentication/presentation/bloc/authentication_bloc.dart';
-import 'package:house_rental_admin/src/authentication/presentation/widgets/default_button.dart';
 import 'package:house_rental_admin/src/authentication/presentation/widgets/default_textfield.dart';
 import 'package:house_rental_admin/src/home/data/models/house_model.dart';
 import 'package:house_rental_admin/src/home/domain/entities/house.dart';
@@ -25,9 +24,12 @@ import 'package:oktoast/oktoast.dart';
 
 class EditHomePage extends StatefulWidget {
   final HouseDetail house;
+  final String id;
+
   const EditHomePage({
     super.key,
     required this.house,
+    required this.id,
   });
 
   @override
@@ -39,22 +41,19 @@ class _EditHomePageState extends State<EditHomePage> {
   final homeBloc2 = locator<HomeBloc>();
   final authBloc = locator<AuthenticationBloc>();
   final formKey = GlobalKey<FormBuilderState>();
-  final homeNameController = TextEditingController();
-  final amountController = TextEditingController();
-  final bathRoomController = TextEditingController();
-  final bedRoomController = TextEditingController();
-  final descriptionController = TextEditingController();
-  HouseLocationModel? houseLocation;
+  String? homeNameController;
+  String? amountController;
+  String? bathRoomController;
+  String? bedRoomController;
+  String? descriptionController;
+
+  HouseLocation? houseLocation;
   bool isImageAvailable = true;
   List<String> images = [];
   @override
   void initState() {
     super.initState();
-    homeNameController.text = widget.house.houseName ?? "";
-    descriptionController.text = widget.house.description ?? "";
-    amountController.text = widget.house.amount.toString();
-    bedRoomController.text = widget.house.bedRoomCount.toString();
-    bathRoomController.text = widget.house.bathRoomCount.toString();
+
     for (int i = 0; i < widget.house.images!.length; i++) {
       images.add(widget.house.images![i]);
     }
@@ -68,14 +67,13 @@ class _EditHomePageState extends State<EditHomePage> {
         listener: (context, state) {
           if (state is UpLoadMultipleImageLoaded) {
             Map<String, dynamic> params = {
-              "name": homeNameController.text,
-              "description": descriptionController.text,
-              "amount": amountController.text,
-              "bed_room_count": bedRoomController.text,
-              "bath_room_count": bathRoomController.text,
+              "name": homeNameController,
+              "description": descriptionController,
+              "amount": amountController,
+              "bed_room_count": bedRoomController,
+              "bath_room_count": bathRoomController,
               "images": state.imageURL,
-              "id": widget.house.amount,
-              "id2": widget.house.description,
+              "id": widget.id,
             };
             homeBloc.add(UpdateHouseEvent(params: params));
           }
@@ -90,7 +88,7 @@ class _EditHomePageState extends State<EditHomePage> {
           }
           return bottomSheetButton(
             context: context,
-            label: "Add Home",
+            label: "Update Home",
             onPressed: () {
               if (formKey.currentState!.saveAndValidate() == true) {
                 Map<String, dynamic> params = {
@@ -154,12 +152,14 @@ class _EditHomePageState extends State<EditHomePage> {
                         },
                         builder: (context) {
                           return DefaultTextfield(
-                            controller: homeNameController,
+                            initialValue: widget.house.houseName,
                             hintText: "Enter home name",
                             label: "Home name",
                             errorText: context.errorText,
-                            onChanged: (p0) => context.didChange(p0),
-                          );
+                           onChanged: (p0) {
+                                context.didChange((p0!));
+                                homeNameController = p0;
+                              });
                         }),
                   ),
                   Padding(
@@ -182,14 +182,15 @@ class _EditHomePageState extends State<EditHomePage> {
                         },
                         builder: (context) {
                           return DefaultTextfield(
+                              initialValue: widget.house.amount.toString(),
                               textInputType: TextInputType.number,
-                              controller: amountController,
                               hintText: "Enter rent amount",
                               label: "Rent amount",
                               errorText: context.errorText,
-                              onChanged: (p0) => context.didChange(
-                                    (num.parse(p0!)),
-                                  ));
+                             onChanged: (p0) {
+                                context.didChange((int.parse(p0!)));
+                                amountController = p0;
+                              });
                         }),
                   ),
                   Padding(
@@ -214,15 +215,15 @@ class _EditHomePageState extends State<EditHomePage> {
                         },
                         builder: (context) {
                           return DefaultTextfield(
+                            initialValue: widget.house.bedRoomCount.toString(),
                             textInputType: TextInputType.number,
-                            controller: bedRoomController,
                             hintText: "Enter number of Bed Rooms",
                             label: "Number of Bed Rooms",
                             errorText: context.errorText,
-                            onChanged: (p0) => context.didChange(
-                              (int.parse(p0!)),
-                            ),
-                          );
+                            onChanged: (p0) {
+                                context.didChange((int.parse(p0!)));
+                                bedRoomController = p0;
+                              });
                         }),
                   ),
                   Padding(
@@ -244,20 +245,21 @@ class _EditHomePageState extends State<EditHomePage> {
                         },
                         builder: (context) {
                           return DefaultTextfield(
-                            textInputType: TextInputType.number,
-                            controller: bathRoomController,
-                            hintText: "Enter number of Bath Rooms",
-                            label: "Number of Bath Rooms",
-                            errorText: context.errorText,
-                            onChanged: (p0) => context.didChange(
-                              (int.parse(p0!)),
-                            ),
-                          );
+                              initialValue:
+                                  widget.house.bathRoomCount.toString(),
+                              textInputType: TextInputType.number,
+                              hintText: "Enter number of Bath Rooms",
+                              label: "Number of Bath Rooms",
+                              errorText: context.errorText,
+                              onChanged: (p0) {
+                                context.didChange((int.parse(p0!)));
+                                bathRoomController = p0;
+                              });
                         }),
                   ),
                   FormBuilderField<String>(
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value?.isEmpty ?? true) {
                           return mustBeAtleast;
                         }
                         return null;
@@ -283,27 +285,23 @@ class _EditHomePageState extends State<EditHomePage> {
                                           height: Sizes().height(context, 0.05),
                                           child: Center(
                                             child: Text(state
-                                                        .houseLocationModel
+                                                        .houseLocation
                                                         .formatedAddress!
                                                         .length <=
                                                     35
-                                                ? state.houseLocationModel
+                                                ? state.houseLocation
                                                     .formatedAddress!
-                                                : "${state.houseLocationModel.formatedAddress?.substring(0, 35)}..."),
+                                                : "${state.houseLocation.formatedAddress?.substring(0, 35)}..."),
                                           ),
                                         ),
                                         Space().width(context, 0.02),
                                         GestureDetector(
                                           onTap: () async {
-                                            Map<String, dynamic> params = {};
-
                                             final result =
                                                 await buildSelectLocation(
-                                                    context, params);
+                                                    context);
                                             if (!mounted) return;
 
-                                            print(
-                                                result as Map<String, dynamic>);
                                             homeBloc2.add(AddLocationEvent(
                                                 params: result));
                                           },
@@ -315,49 +313,56 @@ class _EditHomePageState extends State<EditHomePage> {
                                       ],
                                     );
                                   }
-                                  return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        SizedBox(
-                                          height: Sizes().height(context, 0.05),
-                                          child: Center(
-                                            child: Text(widget
-                                                        .house
-                                                        .formatedAddress!
-                                                        .length <=
-                                                    35
-                                                ? widget.house
-                                                    .formatedAddress!
-                                                : "${widget.house.formatedAddress?.substring(0, 35)}..."),
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Location"),
+                                      Space().height(context, 0.003),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          SizedBox(
+                                            height:
+                                                Sizes().height(context, 0.05),
+                                            child: Center(
+                                              child: Text(widget
+                                                          .house
+                                                          .formatedAddress!
+                                                          .length <=
+                                                      35
+                                                  ? widget
+                                                      .house.formatedAddress!
+                                                  : "${widget.house.formatedAddress?.substring(0, 35)}..."),
+                                            ),
                                           ),
-                                        ),
-                                        Space().width(context, 0.02),
-                                        GestureDetector(
-                                          onTap: () async {
-                                            Map<String, dynamic> params = {};
+                                          Space().width(context, 0.02),
+                                          GestureDetector(
+                                            onTap: () async {
+                                              final result =
+                                                  await buildSelectLocation(
+                                                      context);
+                                              if (!mounted) return;
 
-                                            final result =
-                                                await buildSelectLocation(
-                                                    context, params);
-                                            if (!mounted) return;
-
-                                            print(
-                                                result as Map<String, dynamic>);
-                                            homeBloc2.add(AddLocationEvent(
-                                                params: result));
-                                          },
-                                          child: SvgPicture.asset(
-                                            editSVG,
-                                            color: housePrimaryColor,
+                                              print(result
+                                                  as Map<String, dynamic>);
+                                              homeBloc2.add(AddLocationEvent(
+                                                  params: result));
+                                            },
+                                            child: SvgPicture.asset(
+                                              editSVG,
+                                              color: housePrimaryColor,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    );
+                                        ],
+                                      ),
+                                    ],
+                                  );
                                 },
                                 listener: (BuildContext context, state) {
                                   if (state is AddLocationLoaded) {
-                                    houseLocation = state.houseLocationModel;
+                                    houseLocation = state.houseLocation;
                                     setState(() {});
                                     field.didChange(
                                         houseLocation?.formatedAddress);
@@ -502,12 +507,16 @@ class _EditHomePageState extends State<EditHomePage> {
                           padding: EdgeInsets.symmetric(
                               horizontal: Sizes().width(context, 0.04)),
                           child: DefaultTextArea(
-                            //height: 100,
-                            controller: descriptionController,
+                            initialValue:descriptionController,
+                            
                             hintText: "Enter home description",
                             label: "Home Description",
                             errorText: field.errorText,
-                            onChanged: (p0) => field.didChange(p0),
+                            onChanged: (p0) {
+                                field.didChange((p0!));
+                                descriptionController = p0;
+                              }
+                            
                           ),
                         );
                       }),

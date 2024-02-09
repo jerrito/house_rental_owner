@@ -6,21 +6,21 @@ import 'package:house_rental_admin/core/spacing/whitspacing.dart';
 
 class DefaultTextfield extends StatelessWidget {
   final void Function(String?)? onChanged;
-  final TextEditingController controller;
-  final String? hintText;
-  final String? errorText;
-  final String? label;
+  final TextEditingController? controller;
+  final String? hintText, initialValue, errorText, label;
   final double? height;
   final TextInputType? textInputType;
   const DefaultTextfield(
       {super.key,
       this.onChanged,
-      required this.controller,
+       this.controller,
       this.hintText,
       this.textInputType,
       this.errorText,
       this.height,
-      required this.label});
+       this.label,
+      this.initialValue,
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +37,8 @@ class DefaultTextfield extends StatelessWidget {
           //     child:
           SizedBox(
             height: height,
-            child: TextField(
-             
+            child: TextFormField(
+             initialValue: initialValue,
               keyboardType: textInputType,
               controller: controller,
               onChanged: onChanged,
@@ -79,24 +79,23 @@ class DefaultTextfield extends StatelessWidget {
 class DefaultTextArea extends StatelessWidget {
   final void Function(String?)? onChanged;
   final void Function(PointerDownEvent)? onTapOutSide;
-  final TextEditingController controller;
-  final String? hintText;
-  final String? errorText;
-  final String? label;
+  final TextEditingController? controller;
+  final String? hintText, initialValue, errorText, label;
   final double? height;
   final TextInputType? textInputType;
   final FocusNode? focusNode;
   const DefaultTextArea({
     Key? key,
     this.onChanged,
-    required this.controller,
+     this.controller,
     this.hintText,
     this.errorText,
     this.label,
     this.height,
     this.textInputType,
     this.focusNode,
-    this.onTapOutSide
+    this.onTapOutSide,
+    this.initialValue,
   }) : super(key: key);
 
   @override
@@ -108,7 +107,7 @@ class DefaultTextArea extends StatelessWidget {
           Space().height(context, 0.004),
         SizedBox(
           height:100,width:double.infinity,
-          child: TextField(
+          child: TextFormField(
              focusNode:focusNode,
             expands: true,
             maxLines: null,

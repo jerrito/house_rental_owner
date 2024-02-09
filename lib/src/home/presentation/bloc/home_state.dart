@@ -112,8 +112,8 @@ class GetPlaceByLatLngLoaded extends HomeState {
 }
 
 class AddLocationLoaded extends HomeState {
-  final HouseLocationModel houseLocationModel;
-   AddLocationLoaded({required this.houseLocationModel});
+  final HouseLocation houseLocation;
+   AddLocationLoaded({required this.houseLocation});
 }
 
 

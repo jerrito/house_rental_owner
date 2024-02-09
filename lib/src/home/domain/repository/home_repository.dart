@@ -24,6 +24,6 @@ abstract class HomeRepository {
   Future<Either<String, PlaceSearch>> placeSearch(Map<String, dynamic> params);
   Future<Either<String, PlaceSearch>> getPlaceByLatLng(
       Map<String, dynamic> params);
-  Future<Either<String, HouseLocationModel>> addLocation(
+  Future<Either<String, HouseLocation>> addLocation(
       Map<String, dynamic> params);
 }

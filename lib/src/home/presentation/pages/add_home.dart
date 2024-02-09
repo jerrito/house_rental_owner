@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -49,7 +48,7 @@ class _AddHomePageState extends State<AddHomePage> {
   final descriptionController = TextEditingController();
   bool isImageAvailable = true;
   List<String>? images = [];
-  HouseLocationModel? houseLocation;
+  HouseLocation? houseLocation;
 
   @override
   void initState() {
@@ -285,26 +284,32 @@ class _AddHomePageState extends State<AddHomePage> {
                                 SizedBox(
                                   height: Sizes().height(context, 0.05),
                                   child: Center(
-                                    child: Text(state.houseLocationModel
+                                    child: Text(state.houseLocation
                                                 .formatedAddress!.length <=
                                             35
                                         ? state
-                                            .houseLocationModel.formatedAddress!
-                                        : "${state.houseLocationModel.formatedAddress?.substring(0, 35)}..."),
+                                            .houseLocation.formatedAddress!
+                                        : "${state.houseLocation.formatedAddress?.substring(0, 35)}..."),
                                   ),
                                 ),
                                 Space().width(context, 0.02),
                                 GestureDetector(
                                   onTap: () async {
-                                    Map<String, dynamic> params = {};
+                                  
 
                                     final result = await buildSelectLocation(
-                                        context, params);
-                                    if (!mounted) return;
-
+                                        context);
+                                    if (mounted) {
+                                      // homeBloc2
+                                      //   .add(AddLocationEvent(params: result));
+                                       print(result);
                                     print(result as Map<String, dynamic>);
-                                    homeBloc2
-                                        .add(AddLocationEvent(params: result));
+
+                                    };
+
+                                    print(result);
+                                    print(result as Map<String, dynamic>);
+                                    
                                   },
                                   child: SvgPicture.asset(
                                     editSVG,
@@ -323,14 +328,22 @@ class _AddHomePageState extends State<AddHomePage> {
                             child: DefaultButton(
                               label: "Add Location",
                               onTap: () async {
-                                Map<String, dynamic> params = {};
+                               
 
                                 final result =
-                                    await buildSelectLocation(context, params);
-                                if (!mounted) return;
-                                print(result);
+                                    await buildSelectLocation(context);
+                                    if (mounted) {
+                                      // print(result);
+                                    print(result as Map<String, dynamic>);
+                                      //  homeBloc2
+                                      //   .add(AddLocationEvent(params: result));
+                                      
+
+                                    }
+                               // if (!mounted) return;
+                                print("hh${result}");
                                 homeBloc2.add(AddLocationEvent(
-                                    params: result as Map<String, dynamic>));
+                                    params:result));
                                 
                               },
                             ),
@@ -338,9 +351,9 @@ class _AddHomePageState extends State<AddHomePage> {
                         },
                         listener: (BuildContext context, state) {
                           if (state is AddLocationLoaded) {
-                            houseLocation = state.houseLocationModel;
+                            houseLocation = state.houseLocation;
                             setState(() {});
-                            field.didChange(houseLocation?.formatedAddress);
+                            field.didChange(houseLocation?.formatedAddress ?? "");
                           }
                           if (state is AddLocationError) {
                             OKToast(child: Text(state.errorMessage));
@@ -351,7 +364,7 @@ class _AddHomePageState extends State<AddHomePage> {
                   }),
               Space().height(context, 0.02),
 
-              ToggleButtons(children: [], isSelected: []),
+              ToggleButtons(isSelected: const [], children: const []),
               Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: Sizes().width(context, 0.04)),
@@ -490,7 +503,7 @@ class _AddHomePageState extends State<AddHomePage> {
                         label: "Home Description",
                         errorText: field.errorText,
                         onTapOutSide: (value) {
-                          print("object");
+                        
                           
                         },
                         onChanged: (p0) => field.didChange(p0),

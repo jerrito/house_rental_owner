@@ -179,7 +179,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final response = await addLocation.call(event.params);
 
       emit(response.fold((error) => AddLocationError(errorMessage: error),
-          (response) => AddLocationLoaded(houseLocationModel: response)));
+          (response) => AddLocationLoaded(houseLocation: response)));
     });
   }
 }

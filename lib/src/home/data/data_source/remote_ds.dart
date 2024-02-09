@@ -95,14 +95,15 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
   Future<void> updateHouse(Map<String, dynamic> params) async {
     final response = await FirebaseFirestore.instance
         //.collection('houseRentalAdminAccount')
-        .doc(params["id"])
+        
         .collection("houses")
-        .withConverter<HouseDetailModel>(
-          fromFirestore: (snapshot, _) =>
-              HouseDetailModel.fromJson(snapshot.data()!),
-          toFirestore: (house, _) => house.toMap(),
-        )
-        .doc(params["id2"])
+        .doc(params["id"])
+        // .withConverter<HouseDetailModel>(
+        //   fromFirestore: (snapshot, _) =>
+        //       HouseDetailModel.fromJson(snapshot.data()!),
+        //   toFirestore: (house, _) => house.toMap(),
+        // )
+        
         .update(params);
     return response;
   }

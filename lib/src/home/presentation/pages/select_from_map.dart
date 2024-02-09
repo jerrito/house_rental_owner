@@ -93,10 +93,10 @@ class _SelectFromMapPageState extends State<SelectFromMapPage> {
                           Map<String, dynamic> params = {
                             "lat": lat,
                             "lng": lng,
-                            "name": location,
+                            "formatted_address": location,
                           };
                           //mapController.dispose();
-                          print(params);
+                        //  print(params);
                           context.pop(params);
                         },
                 ),

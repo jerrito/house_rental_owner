@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:house_rental_admin/src/home/domain/entities/place_search.dart';
 
 class HouseDetail extends Equatable {
   final String? houseName, owner, phoneNumber, description, category;

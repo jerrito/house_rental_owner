@@ -16,7 +16,6 @@ import 'package:house_rental_admin/src/home/presentation/pages/home_page.dart';
 import 'package:house_rental_admin/src/home/presentation/pages/profile.dart';
 import 'package:house_rental_admin/src/home/presentation/pages/select_from_map.dart';
 
-import '../../src/home/domain/entities/house.dart';
 
 GoRouter goRouter() {
   return GoRouter(initialLocation: "/", routes: [
@@ -115,6 +114,7 @@ GoRouter goRouter() {
               name: "editHome",
               builder: (context, state) {
                 return EditHomePage(
+                  id:state.uri.queryParameters["id"].toString(),
                   house: HouseDetailModel.fromJson(
                     
                    jsonDecode(state.uri.queryParameters["house"].toString())

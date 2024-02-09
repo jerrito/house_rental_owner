@@ -144,7 +144,7 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<Either<String, HouseLocationModel>> addLocation(
+  Future<Either<String, HouseLocation>> addLocation(
       Map<String, dynamic> params) async {
     
       try {

@@ -4,12 +4,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:house_rental_admin/assets/svgs/svg_constants.dart';
 import 'package:house_rental_admin/core/size/sizes.dart';
-import 'package:house_rental_admin/core/spacing/whitspacing.dart';
 import 'package:house_rental_admin/locator.dart';
 import 'package:house_rental_admin/src/authentication/presentation/widgets/default_textfield.dart';
 import 'package:house_rental_admin/src/home/presentation/bloc/home_bloc.dart';
 
-buildSelectLocation(BuildContext context, Map<String, dynamic> params) {
+buildSelectLocation(BuildContext context) {
   TextEditingController controller = TextEditingController();
   final homeBloc = locator<HomeBloc>();
   return showModalBottomSheet(
@@ -20,6 +19,7 @@ buildSelectLocation(BuildContext context, Map<String, dynamic> params) {
       builder: (context) {
         return StatefulBuilder(builder: (context, setState) {
           return SingleChildScrollView(
+            physics:const NeverScrollableScrollPhysics(),
             child: Container(
                 height: Sizes().height(context, 0.85),
                 padding: EdgeInsets.symmetric(
@@ -78,21 +78,21 @@ buildSelectLocation(BuildContext context, Map<String, dynamic> params) {
                             //     builder: ((context) {
                             //       return const SelectFromMapPage();
                             //     }));
-                            print("nav");
-                            Map<String, dynamic> param = {};
+                            
+                            
                             final result = await context.pushNamed(
                               "map",
                             );
                             //if (!context.mounted) return;
-                            print(result);
+                           // print("result${result}");
 
-                            setState(() {
-                              param = result as Map<String, dynamic>;
-                            });
-                            print(param);
+                            // setState(() {
+                            //   param = result as Map<String, dynamic>;
+                            // });
+                            // print(param);
                             if (context.mounted) {
                               
-                              context.pop(param);
+                              context.pop(result);
                             }
                           },
                           child: SvgPicture.asset(
@@ -116,13 +116,13 @@ buildSelectLocation(BuildContext context, Map<String, dynamic> params) {
                                   itemCount:
                                       state.placeSearch.results?.length ?? 0,
                                   shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
+                                 // physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, item) {
                                     final data =
                                         state.placeSearch.results?[item];
                                     return ListTile(
                                       onTap: () {
-                                        params = {
+                                      final  params = {
                                           "formatted_address":
                                               data?.formatedAddress,
                                           "lng": data?.geometry?.location.lng,
@@ -138,8 +138,7 @@ buildSelectLocation(BuildContext context, Map<String, dynamic> params) {
                                   }),
                             );
                           }
-                          ;
-                          return SizedBox();
+                          return const SizedBox();
                         })
                   ],
                 )),
