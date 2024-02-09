@@ -78,12 +78,14 @@ class DefaultTextfield extends StatelessWidget {
 
 class DefaultTextArea extends StatelessWidget {
   final void Function(String?)? onChanged;
+  final void Function(PointerDownEvent)? onTapOutSide;
   final TextEditingController controller;
   final String? hintText;
   final String? errorText;
   final String? label;
   final double? height;
   final TextInputType? textInputType;
+  final FocusNode? focusNode;
   const DefaultTextArea({
     Key? key,
     this.onChanged,
@@ -93,6 +95,8 @@ class DefaultTextArea extends StatelessWidget {
     this.label,
     this.height,
     this.textInputType,
+    this.focusNode,
+    this.onTapOutSide
   }) : super(key: key);
 
   @override
@@ -100,22 +104,24 @@ class DefaultTextArea extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label!),
+        Text(label ?? ""),
           Space().height(context, 0.004),
         SizedBox(
           height:100,width:double.infinity,
           child: TextField(
+             focusNode:focusNode,
             expands: true,
             maxLines: null,
             minLines: null,
              keyboardType: textInputType,
               controller: controller,
               onChanged: onChanged,
+                onTapOutside:onTapOutSide,
               decoration: InputDecoration(
                 
                    isDense: true,
                     errorText: errorText,
-                   contentPadding:const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                   contentPadding:const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                    hintText: hintText,
                     hintStyle: const TextStyle(color: Colors.grey),
                     //label: Text(label!),

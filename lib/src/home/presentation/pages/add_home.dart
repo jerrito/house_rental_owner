@@ -261,92 +261,97 @@ class _AddHomePageState extends State<AddHomePage> {
               ),
               FormBuilderField<String>(
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return mustBeAtleast;
+                    if (value?.isEmpty ?? true) {
+                      return "Location  required";
+                    }
+                    if (value!.length <= 1) {
+                      return mustBeCharacters;
                     }
                     return null;
                   },
                   name: "location",
                   builder: (field) {
                     return Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Sizes().width(context, 0.04),
-                        ),
-                        child: InputDecorator(
-                          decoration:
-                              InputDecoration(errorText: field.errorText),
-                          child: BlocConsumer(
-                            bloc: homeBloc2,
-                            builder: (context, state) {
-                              if (state is AddLocationLoaded) {
-                                return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    SizedBox(
-                                      height: Sizes().height(context, 0.05),
-                                      child: Center(
-                                        child: Text(state.houseLocationModel
-                                                    .formatedAddress!.length <=
-                                                35
-                                            ? state.houseLocationModel
-                                                .formatedAddress!
-                                            : "${state.houseLocationModel.formatedAddress?.substring(0, 35)}..."),
-                                      ),
-                                    ),
-                                    Space().width(context, 0.02),
-                                    GestureDetector(
-                                      onTap: () async {
-                                        Map<String, dynamic> params = {};
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Sizes().width(context, 0.04),
+                      ),
+                      child: BlocConsumer(
+                        bloc: homeBloc2,
+                        builder: (context, state) {
+                          if (state is AddLocationLoaded) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                SizedBox(
+                                  height: Sizes().height(context, 0.05),
+                                  child: Center(
+                                    child: Text(state.houseLocationModel
+                                                .formatedAddress!.length <=
+                                            35
+                                        ? state
+                                            .houseLocationModel.formatedAddress!
+                                        : "${state.houseLocationModel.formatedAddress?.substring(0, 35)}..."),
+                                  ),
+                                ),
+                                Space().width(context, 0.02),
+                                GestureDetector(
+                                  onTap: () async {
+                                    Map<String, dynamic> params = {};
 
-                                        final result =
-                                            await buildSelectLocation(
-                                                context, params);
-                                        if (!mounted) return;
+                                    final result = await buildSelectLocation(
+                                        context, params);
+                                    if (!mounted) return;
 
-                                        print(result as Map<String, dynamic>);
-                                        homeBloc2.add(
-                                            AddLocationEvent(params: result));
-                                      },
-                                      child: SvgPicture.asset(
-                                        editSVG,
-                                        color: housePrimaryColor,
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }
-                              return DefaultButton(
-                                label: "Add Location",
-                                onTap: () async {
-                                  Map<String, dynamic> params = {};
+                                    print(result as Map<String, dynamic>);
+                                    homeBloc2
+                                        .add(AddLocationEvent(params: result));
+                                  },
+                                  child: SvgPicture.asset(
+                                    editSVG,
+                                    color: housePrimaryColor,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return InputDecorator(
+                            decoration: InputDecoration(
+                                enabledBorder: const UnderlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.white)),
+                                errorText: field.errorText),
+                            child: DefaultButton(
+                              label: "Add Location",
+                              onTap: () async {
+                                Map<String, dynamic> params = {};
 
-                                  final result = await buildSelectLocation(
-                                      context, params);
-                                  if (!mounted) return;
-                                  print(result);
-                                  homeBloc2.add(AddLocationEvent(
-                                      params: result as Map<String, dynamic>));
-                                  print(result);
-                                  print("result");
-                                },
-                              );
-                            },
-                            listener: (BuildContext context, state) {
-                              if (state is AddLocationLoaded) {
-                                houseLocation = state.houseLocationModel;
-                                setState(() {});
-                                field.didChange(houseLocation?.formatedAddress);
-                              }
-                              if (state is AddLocationError) {
-                                OKToast(
-                                  child:Text(state.errorMessage)
-                                );
-                              }
-                            },
-                          ),
-                        ));
+                                final result =
+                                    await buildSelectLocation(context, params);
+                                if (!mounted) return;
+                                print(result);
+                                homeBloc2.add(AddLocationEvent(
+                                    params: result as Map<String, dynamic>));
+                                
+                              },
+                            ),
+                          );
+                        },
+                        listener: (BuildContext context, state) {
+                          if (state is AddLocationLoaded) {
+                            houseLocation = state.houseLocationModel;
+                            setState(() {});
+                            field.didChange(houseLocation?.formatedAddress);
+                          }
+                          if (state is AddLocationError) {
+                            OKToast(child: Text(state.errorMessage));
+                          }
+                        },
+                      ),
+                    );
                   }),
+              Space().height(context, 0.02),
+
+              ToggleButtons(children: [], isSelected: []),
               Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: Sizes().width(context, 0.04)),
@@ -370,7 +375,8 @@ class _AddHomePageState extends State<AddHomePage> {
                   ],
                 ),
               ),
-              Space().height(context, 0.02),
+
+              // Space().height(context, 0.005),
               FormBuilderField<List<String>>(
                   name: "house_images",
                   validator: (value) {
@@ -382,7 +388,10 @@ class _AddHomePageState extends State<AddHomePage> {
                   },
                   builder: (field) {
                     return InputDecorator(
-                      decoration: InputDecoration(errorText: field.errorText),
+                      decoration: InputDecoration(
+                          enabledBorder: const UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white)),
+                          errorText: field.errorText),
                       child: BlocConsumer(
                         bloc: homeBloc3,
                         builder: (context, state) {
@@ -474,16 +483,25 @@ class _AddHomePageState extends State<AddHomePage> {
                       padding: EdgeInsets.symmetric(
                           horizontal: Sizes().width(context, 0.04)),
                       child: DefaultTextArea(
+                        focusNode: FocusNode(),
                         //height: 100,
                         controller: descriptionController,
                         hintText: "Enter home description",
                         label: "Home Description",
                         errorText: field.errorText,
+                        onTapOutSide: (value) {
+                          print("object");
+                          
+                        },
                         onChanged: (p0) => field.didChange(p0),
                       ),
                     );
                   }),
-              Space().height(context, 0.02)
+
+              Space().height(context, 0.04),
+              const DefaultButton(
+                label: "",
+              )
             ],
           ),
         ),

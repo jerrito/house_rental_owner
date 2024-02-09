@@ -14,7 +14,7 @@ class DefaultButton extends StatelessWidget {
       height: Sizes().height(context, 0.05),
       child: ElevatedButton(
         onPressed: onTap,
-        child: Text(label!),
+        child: Text(label ?? ""),
       ),
     );
   }
