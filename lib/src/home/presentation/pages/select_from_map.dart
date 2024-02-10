@@ -15,7 +15,6 @@ class SelectFromMapPage extends StatefulWidget {
   const SelectFromMapPage({
     super.key,
     required this.params,
-    
   });
 
   @override
@@ -69,10 +68,7 @@ class _SelectFromMapPageState extends State<SelectFromMapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomSheet: BlocConsumer(
-        bloc: homeBloc,
-        builder: (context, state) {
-          return Container(
+      bottomSheet:  Container(
             height: Sizes().height(context, 0.23),
             padding: EdgeInsets.symmetric(
               horizontal: Sizes().width(context, 0.054),
@@ -84,28 +80,10 @@ class _SelectFromMapPageState extends State<SelectFromMapPage> {
                 Space().height(context, 0.02),
                 Text(location),
                 Space().height(context, 0.04),
-                DefaultButton(
-                  isActive: isActive,
-                  label: "Save",
-                  onTap: !isActive
-                      ? null
-                      : () {
-                          Map<String, dynamic> params = {
-                            "lat": lat,
-                            "lng": lng,
-                            "formatted_address": location,
-                          };
-                          //mapController.dispose();
-                        //  print(params);
-                          context.pop(params);
-                        },
-                ),
-              ],
-            ),
-          );
-        },
-        listener: (BuildContext context, Object? state) {
-          if (state is GetPlaceByLatLngLoaded) {
+                BlocConsumer(
+                  bloc:homeBloc,
+                  listener: (context, state) {
+                    if (state is GetPlaceByLatLngLoaded) {
             location = state.placeSearch.results?[0].formatedAddress ?? "";
             lat = state.placeSearch.results?[0].geometry?.location.lat ?? 5.0;
             lng = state.placeSearch.results?[0].geometry?.location.lng ?? 0.20;
@@ -115,7 +93,36 @@ class _SelectFromMapPageState extends State<SelectFromMapPage> {
           if (state is GetPlaceByLatLngError) {
             OKToast(child: Text(state.errorMessage));
           }
-        },
+                  },
+                  builder: (context, state) {
+                    if (state is GetPlaceByLatLngLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+                    return DefaultButton(
+                      isActive: isActive,
+                      label: "Save",
+                      onTap: !isActive
+                          ? null
+                          : () {
+                              Map<String, dynamic> params = {
+                                "lat": lat,
+                                "lng": lng,
+                                "formatted_address": location,
+                              };
+                              //mapController.dispose();
+                              //  print(params);
+                              context.pop(params);
+                            },
+                    );
+                  },
+                ),
+              ],
+            ),
+          
+        
+        
       ),
       body: Stack(
         alignment: Alignment.bottomCenter,
@@ -125,8 +132,8 @@ class _SelectFromMapPageState extends State<SelectFromMapPage> {
             onMapCreated: mapCreated,
             minMaxZoomPreference: const MinMaxZoomPreference(6, 16),
             initialCameraPosition: CameraPosition(
-                target:
-                    LatLng(loc?.latitude ?? 5.617830930291503, loc?.longitude ?? -0.16952356970849),
+                target: LatLng(loc?.latitude ?? 5.617830930291503,
+                    loc?.longitude ?? -0.16952356970849),
                 zoom: 15.0,
                 bearing: loc?.heading ?? 0),
             myLocationEnabled: true,

@@ -165,6 +165,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<GetPlaceByLatLngEvent>((event, emit) async {
+      emit(GetPlaceByLatLngLoading());
       final response = await getPlaceByLatLng.call(event.params);
 
       emit(

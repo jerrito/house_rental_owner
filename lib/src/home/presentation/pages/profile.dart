@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:house_rental_admin/core/size/sizes.dart';
 import 'package:house_rental_admin/locator.dart';
 import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart';
@@ -8,6 +9,7 @@ import 'package:house_rental_admin/src/home/presentation/bloc/home_bloc.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/bottom_nav_bar.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/profile_list.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/show_dialog.dart';
+import 'package:house_rental_admin/src/home/presentation/widgets/show_dialog_pin.dart';
 
 class ProfilePage extends StatefulWidget {
   final Owner owner;
@@ -23,6 +25,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final homeBloc = locator<HomeBloc>();
   final authBloc = locator<AuthenticationBloc>();
+  final formKey = GlobalKey<FormBuilderFieldState>();
   @override
   Widget build(BuildContext context) {
     authBloc.add(const GetCacheDataEvent());
@@ -53,29 +56,88 @@ class _ProfilePageState extends State<ProfilePage> {
                               image: Image.network(owner.profileURL ?? "")
                                   .image))),
                   ProfileList(
-                      onPressed: null,
-                      data: "${owner.firstName} ${owner.lastName}"),
-                  ProfileList(onPressed: null, data: "${owner.email}"),
-                  ProfileList(onPressed: null, data: "${owner.phoneNumber}"),
-                  ProfileList(onPressed: null, data: "${owner.townORCity}"),
-                  ProfileList(
-                      onPressed: () {
-                        showProfileDialog(
+                      onPressed: () async {
+                        await showProfileDialog(
                             context,
                             owner.houseGPSAddress ?? "",
                             "House GPS Address",
                             authBloc,
                             owner.id ?? "",
                             "house_GPS_address");
+
+                        authBloc.add(const GetCacheDataEvent());
+                      },
+                      data: "${owner.firstName} ${owner.lastName}"),
+                  ProfileList(
+                      onPressed: () async{
+                       await showProfileDialog(context, owner.email ?? "",
+                        "Email",
+                            authBloc, owner.id ?? "", "email");
+                            authBloc.add(const GetCacheDataEvent());
+                      },
+                      data: "${owner.email}"),
+                  ProfileList(
+                      onPressed: () async{
+                       await showProfileDialog(
+                            context,
+                            owner.phoneNumber ?? "",
+                            "House GPS Address",
+                            authBloc,
+                            owner.id ?? "",
+                            "house_GPS_address");
+                         authBloc.add(const GetCacheDataEvent());   
+                      },
+                      data: "${owner.phoneNumber}"),
+                  ProfileList(
+                      onPressed: () async{
+                       await showProfileDialog(
+                            context,
+                            owner.townORCity ?? "",
+                            "Town Or City",
+                            authBloc,
+                            owner.id ?? "",
+                            "town_or_city");
+                          authBloc.add(const GetCacheDataEvent());  
+                      },
+                      data: "${owner.townORCity}"),
+                  ProfileList(
+                      onPressed: () async{
+                        await showProfileDialog(
+                            context,
+                            owner.houseGPSAddress ?? "",
+                            "House GPS Address",
+                            authBloc,
+                            owner.id ?? "",
+                            "house_GPS_address");
+                             authBloc.add(const GetCacheDataEvent());
                       },
                       data: "${owner.houseGPSAddress}"),
                   ProfileList(
-                      onPressed: () {
-                        showProfileDialog(
-                            context, owner.role ?? "", "Role", authBloc,owner.id ?? "","house_GPS_address");
+                      onPressed: () async{
+                       await showProfileDialog(
+                          context,
+                          owner.role ?? "",
+                          "Role",
+                          authBloc,
+                          owner.id ?? "",
+                          "role",
+                        );
+                         authBloc.add(const GetCacheDataEvent());
                       },
                       data: "${owner.role}"),
-                  ProfileList(onPressed: () {}, data: "Change Pin"),
+                  ProfileList(onPressed: () async{
+                     await showPinChangeProfileDialog(
+                          context,
+                          owner.password ?? "",
+                          "Password",
+                          authBloc,
+                          owner.id ?? "",
+                          "password",
+                          owner.email ?? "",
+                          formKey
+                        );
+                         authBloc.add(const GetCacheDataEvent());
+                  }, data: "Change Pin"),
                 ],
               );
             }

@@ -1,13 +1,13 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:house_rental_admin/core/size/sizes.dart';
 import 'package:house_rental_admin/core/spacing/whitspacing.dart';
 import 'package:house_rental_admin/src/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:house_rental_admin/src/authentication/presentation/widgets/default_button.dart';
 import 'package:house_rental_admin/src/authentication/presentation/widgets/default_textfield.dart';
 
-Widget showProfileDialog(
+showProfileDialog(
   BuildContext context,
   String data,
   String? label,
@@ -15,52 +15,72 @@ Widget showProfileDialog(
   String id,
   String update,
 ) {
-  return SimpleDialog(
-    title: const Text("Edit profile"),
-    children: [
-      Space().height(context, 0.02),
-      DefaultTextfield(
-        initialValue: data,
-        label: "Edit $label",
-        onChanged: (value) {},
-      ),
-      Space().height(context, 0.02),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          DefaultButton(
-            label: "Cancel",
-            onTap: () {
-              context.pop();
-            },
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: Sizes().width(context, 0.04),
+            vertical: Sizes().height(context, 0.02),
           ),
-          BlocConsumer(
-            bloc: bloc,
-            listener: (context, state) {
-              if (state is UpdateUserLoaded) {
-                context.pop();
-              }
-              if (state is UpdateUserError) {}
-            },
-            builder: (context, state) {
-              if (state is UpdateUserLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
+          title:  Text("Edit $label"),
+          children: [
+            Space().height(context, 0.02),
+            DefaultTextfield(
+              initialValue: data,
+              label: "Enter $label",
+              onChanged: (value) {
+                data = value!;
+              },
+            ),
+            Space().height(context, 0.02),
+            BlocConsumer(
+              bloc: bloc,
+                      listener: (context, state) {
+                        if (state is UpdateUserLoaded) {
+                          context.pop();
+                        }
+                        if (state is UpdateUserError) {}
+                      },
+                      builder: (context, state) {
+                        if (state is UpdateUserLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      width: Sizes().width(context, 0.3),
+                      child: DefaultButton(
+                        label: "Cancel",
+                        onTap: () {
+                          context.pop();
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                          width: Sizes().width(context, 0.3),
+                          child: DefaultButton(
+                            label: "Update",
+                            onTap: () {
+                              Map<String, dynamic> params = {
+                                "id": id,
+                                update: data
+                              };
+                              bloc.add(
+                                UpdateUserEvent(params: params),
+                              );
+                            },
+                          ),
+                       
+                    ),
+                  ],
                 );
-              }
-              return DefaultButton(
-                label: "Update",
-                onTap: () {
-                  Map<String, dynamic> params = {"id": ""};
-                  bloc.add(
-                    UpdateUserEvent(params: params),
-                  );
-                },
-              );
-            },
-          ),
-        ],
-      )
-    ],
-  );
+              },
+            )
+          ],
+        );
+      });
 }

@@ -24,7 +24,7 @@ class ProfileList extends StatelessWidget {
         vertical: Sizes().height(context,0.005),
 
       ),      
-          height: 80,
+          height: 70,
           width: double.infinity,
           decoration: BoxDecoration(
             color:Colors.black12,
@@ -33,7 +33,8 @@ class ProfileList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(data),
-                IconButton(icon:const Icon(Icons.edit, color: Colors.blue,), onPressed: onPressed)
+                IconButton(icon:const Icon(Icons.edit, color: Colors.blue,), 
+                onPressed: onPressed)
               ])),
     );
   }
