@@ -7,9 +7,9 @@ class GetCacheData extends UseCases<Owner, NoParams> {
   final AuthenticationRepository repository;
 
   GetCacheData({required this.repository});
-  
+
   @override
-  Future<Either<String, Owner>> call(NoParams params) async{
-    return await repository.getCacheData();
+  Future<Either<String, Owner>> call(NoParams params) async {
+    return await repository.getOwnerCacheData();
   }
 }

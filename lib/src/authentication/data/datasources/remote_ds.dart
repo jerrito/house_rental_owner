@@ -35,6 +35,7 @@ class AuthenticationRemoteDatasourceImpl
         .get()
         .then((snapshot) {
       var userSnapShot = snapshot.docs;
+      localDatasource.cacheUserData(userSnapShot.first.data());
       return userSnapShot.first.data();
     });
   }
@@ -60,8 +61,12 @@ class AuthenticationRemoteDatasourceImpl
 
   @override
   Future<void> updateUser(Map<String, dynamic> params) async {
-    await usersRef.doc(params["id"]).update(params);
-    await localDatasource.cacheUserData(OwnerModel.fromJson(params));
+    final data = usersRef.doc(params["id"]);
+    await data.update(params);
+    
+   await data.get().then((value){ 
+      localDatasource.cacheUserData(value.data()!);});
+    
   }
 
   @override
@@ -77,14 +82,14 @@ class AuthenticationRemoteDatasourceImpl
       data = userData.data();
       data.id = userData.id;
       data.uid ??= params["uid"];
-     
+
       //localDatasource.cacheUserData(UserModel.fromJson(data.toMap()));
 
-      await usersRef.doc(userData.id).update({"id": userData.id,"uid":data.uid ?? params["uid"]});
+      await usersRef
+          .doc(userData.id)
+          .update({"id": userData.id, "uid": data.uid ?? params["uid"]});
       await localDatasource.cacheUserData(OwnerModel.fromJson(data.toMap()));
-     
 
-     
       //return userData.data();
       //return value;
     });

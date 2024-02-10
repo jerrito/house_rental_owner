@@ -27,6 +27,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     if (await networkInfo.isConnected) {
       try {
         final response = await remoteDatasource.signin(params);
+        
 
         return Right(response);
       } catch (e) {
@@ -157,7 +158,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   }
 
   @override
-  Future<Either<String, Owner>> getCacheData() async {
+  Future<Either<String, Owner>> getOwnerCacheData() async {
     try {
       final response = await localDatasource.getUserCachedData();
 
@@ -202,6 +203,4 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       return Left(networkInfo.noNetworkMessage);
     }
   }
-
-  
 }

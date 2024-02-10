@@ -49,13 +49,14 @@ class _EditHomePageState extends State<EditHomePage> {
 
   HouseLocation? houseLocation;
   bool isImageAvailable = true;
-  List<String> images = [];
+  List<String> localImages = [];
+  List<String> networkImages = [];
   @override
   void initState() {
     super.initState();
 
     for (int i = 0; i < widget.house.images!.length; i++) {
-      images.add(widget.house.images![i]);
+      networkImages.add(widget.house.images![i]);
     }
   }
 
@@ -91,18 +92,26 @@ class _EditHomePageState extends State<EditHomePage> {
             label: "Update Home",
             onPressed: () {
               if (formKey.currentState!.saveAndValidate() == true) {
-                Map<String, dynamic> params = {
-                  "phone_number": widget.house.houseName,
-                  "path": images,
-                  "images": images.length
+                if (networkImages.isNotEmpty) {
+              Map<String, dynamic> params = {
+              "name": homeNameController,
+              "description": descriptionController,
+              "amount": amountController,
+              "bed_room_count": bedRoomController,
+              "bath_room_count": bathRoomController,              
+              "id": widget.id,
                 };
-                homeBloc.add(UpLoadMultipleImageEvent(params: params));
-
-                // Map<String, dynamic> params = {
-                //   "phone_number": widget.owner.phoneNumber,
-                //   "path": profileURL,
-                // };
-                // homeBloc.add(addHomeEvent(params: params));
+                homeBloc.add(UpdateHouseEvent(params: params),);
+                } 
+                else {
+                  Map<String, dynamic> params = {
+                    "phone_number": widget.house.houseName,
+                    "path": localImages,
+                    "images": localImages.length
+                  };
+                  homeBloc.add(UpLoadMultipleImageEvent(params: params));
+                }
+              
               }
             },
           );
@@ -152,11 +161,11 @@ class _EditHomePageState extends State<EditHomePage> {
                         },
                         builder: (context) {
                           return DefaultTextfield(
-                            initialValue: widget.house.houseName,
-                            hintText: "Enter home name",
-                            label: "Home name",
-                            errorText: context.errorText,
-                           onChanged: (p0) {
+                              initialValue: widget.house.houseName,
+                              hintText: "Enter home name",
+                              label: "Home name",
+                              errorText: context.errorText,
+                              onChanged: (p0) {
                                 context.didChange((p0!));
                                 homeNameController = p0;
                               });
@@ -187,7 +196,7 @@ class _EditHomePageState extends State<EditHomePage> {
                               hintText: "Enter rent amount",
                               label: "Rent amount",
                               errorText: context.errorText,
-                             onChanged: (p0) {
+                              onChanged: (p0) {
                                 context.didChange((int.parse(p0!)));
                                 amountController = p0;
                               });
@@ -215,12 +224,13 @@ class _EditHomePageState extends State<EditHomePage> {
                         },
                         builder: (context) {
                           return DefaultTextfield(
-                            initialValue: widget.house.bedRoomCount.toString(),
-                            textInputType: TextInputType.number,
-                            hintText: "Enter number of Bed Rooms",
-                            label: "Number of Bed Rooms",
-                            errorText: context.errorText,
-                            onChanged: (p0) {
+                              initialValue:
+                                  widget.house.bedRoomCount.toString(),
+                              textInputType: TextInputType.number,
+                              hintText: "Enter number of Bed Rooms",
+                              label: "Number of Bed Rooms",
+                              errorText: context.errorText,
+                              onChanged: (p0) {
                                 context.didChange((int.parse(p0!)));
                                 bedRoomController = p0;
                               });
@@ -451,9 +461,9 @@ class _EditHomePageState extends State<EditHomePage> {
                                 width: double.infinity,
                                 height: 150,
                                 child: CarouselSlider.builder(
-                                  itemCount: images.length,
+                                  itemCount: networkImages.length,
                                   itemBuilder: (context, index, value) {
-                                    final paths = images[index];
+                                    final paths = networkImages[index];
 
                                     return Container(
                                       padding: EdgeInsets.symmetric(
@@ -482,10 +492,11 @@ class _EditHomePageState extends State<EditHomePage> {
                                 debugPrint(state.errorMessage);
                               }
                               if (state is AddMultipleImageLoaded) {
+                                networkImages.clear();
                                 for (int i = 0; i < state.files.length; i++) {
-                                  images.add(state.files[i].path!);
+                                  localImages.add(state.files[i].path!);
                                 }
-                                field.didChange(images);
+                                field.didChange(localImages);
                               }
                             },
                           ),
@@ -507,17 +518,14 @@ class _EditHomePageState extends State<EditHomePage> {
                           padding: EdgeInsets.symmetric(
                               horizontal: Sizes().width(context, 0.04)),
                           child: DefaultTextArea(
-                            initialValue:descriptionController,
-                            
-                            hintText: "Enter home description",
-                            label: "Home Description",
-                            errorText: field.errorText,
-                            onChanged: (p0) {
+                              initialValue: descriptionController,
+                              hintText: "Enter home description",
+                              label: "Home Description",
+                              errorText: field.errorText,
+                              onChanged: (p0) {
                                 field.didChange((p0!));
                                 descriptionController = p0;
-                              }
-                            
-                          ),
+                              }),
                         );
                       }),
                   Space().height(context, 0.02)
