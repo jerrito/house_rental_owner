@@ -22,15 +22,14 @@ showPinChangeProfileDialog(
   String id,
   String update,
   String email,
+  String oldValue,
+  String newChangeValue,
+  String newRepeatValue,
   GlobalKey<FormBuilderFieldState> formKey,
 ) {
   return showDialog(
       context: context,
       builder: (context) {
-        String? newRepeatValue;
-        String? newChangeValue;
-        String? oldValue;
-
         return SingleChildScrollView(
           child: FormBuilder(
             key: formKey,
@@ -63,15 +62,14 @@ showPinChangeProfileDialog(
                           label: "Enter old $label",
                           errorText: field.errorText,
                           onChanged: (p0) {
-                            oldValue = p0;
+                            oldValue = p0!;
                             field.didChange(p0);
                           });
                     }),
                 Space().height(context, 0.01),
                 FormBuilderField<String>(
-                  autovalidateMode: AutovalidateMode.always,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
-                    print(value);
                     if (value?.isEmpty ?? true) {
                       return fieldRequired;
                     }
@@ -89,19 +87,16 @@ showPinChangeProfileDialog(
                     return DefaultTextfield(
                         label: "Enter new $label",
                         errorText: field.errorText,
-                        onChanged: (p0) {                    
-                          newChangeValue = p0;
+                        onChanged: (p0) {
+                          newChangeValue = p0!;
                           field.didChange(p0);
-
-                          print(newRepeatValue);
                         });
                   },
                 ),
                 Space().height(context, 0.01),
                 FormBuilderField<String>(
-                    autovalidateMode: AutovalidateMode.always,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
-                      print(value);
                       if (value?.isEmpty ?? true) {
                         return fieldRequired;
                       }
@@ -109,10 +104,10 @@ showPinChangeProfileDialog(
                       if (!isLength(value!, 8)) {
                         return 'must be at least 8 characters';
                       }
-                      if ( newChangeValue == value ) {
+                      if (newChangeValue != value) {
                         return "Password does't much";
-                      } 
-                      
+                      }
+
                       return null;
                     },
                     name: "repeat",
@@ -121,24 +116,22 @@ showPinChangeProfileDialog(
                         label: "Repeat new $label",
                         errorText: field.errorText,
                         onChanged: (p0) {
-                          newRepeatValue = p0;
-                          
+                          newRepeatValue = p0!;
                           field.didChange(p0);
-
-                          print(newRepeatValue);
                         },
                       );
                     }),
                 Space().height(context, 0.02),
                 BlocConsumer(
                   bloc: bloc,
-                  listener: (context, state) {
+                  listener: (context, state) async {
                     if (state is SigninLoaded) {
-                      var bites = utf8.encode(oldValue ?? "");
-                      var password = sha512.convert(bites);
+                      print(newChangeValue);
+                      var newBites = utf8.encode(newChangeValue);
+                      var newPassword = sha512.convert(newBites);
                       Map<String, dynamic> params = {
                         "id": id,
-                        update: password,
+                        update: newPassword.toString(),
                       };
                       bloc.add(
                         UpdateUserEvent(params: params),
@@ -148,13 +141,16 @@ showPinChangeProfileDialog(
                       context.pop();
                     }
                     if (state is UpdateUserError) {
+                      context.pop();
                       OKToast(
                         child: Text(
                           state.errorMessage,
                         ),
                       );
+                      print(state.errorMessage);
                     }
                     if (state is SigninError) {
+                      context.pop();
                       const OKToast(
                         child: Text(
                           "Wrong Password",
@@ -191,21 +187,22 @@ showPinChangeProfileDialog(
                           child: DefaultButton(
                             label: "Update",
                             onTap: () {
-                              if (formKey.currentState?.validate() == true) {
-                                var bites = utf8.encode(newRepeatValue ?? "");
-                                var password = sha512.convert(bites);
-                                final params = {
-                                  "email": email,
-                                  "password": password.toString(),
-                                  //"uid": widget.uid,
-                                };
+                              // if (formKey.currentState?.validate() == true) {
+                              print(oldValue);
+                              var bites = utf8.encode(oldValue);
+                              var password = sha512.convert(bites);
+                              Map<String, dynamic> params = {
+                                "email": email,
+                                "password": password.toString(),
+                                //"uid": widget.uid,
+                              };
 
-                                bloc.add(
-                                  SigninEvent(
-                                    users: params,
-                                  ),
-                                );
-                              }
+                              bloc.add(
+                                SigninEvent(
+                                  users: params,
+                                ),
+                              );
+                              //}
                             },
                           ),
                         ),

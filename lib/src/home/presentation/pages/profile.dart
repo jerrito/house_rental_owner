@@ -26,6 +26,9 @@ class _ProfilePageState extends State<ProfilePage> {
   final homeBloc = locator<HomeBloc>();
   final authBloc = locator<AuthenticationBloc>();
   final formKey = GlobalKey<FormBuilderFieldState>();
+  String? newRepeatValue;
+  String? newChangeValue;
+  String? oldValue;
   @override
   Widget build(BuildContext context) {
     authBloc.add(const GetCacheDataEvent());
@@ -69,39 +72,38 @@ class _ProfilePageState extends State<ProfilePage> {
                       },
                       data: "${owner.firstName} ${owner.lastName}"),
                   ProfileList(
-                      onPressed: () async{
-                       await showProfileDialog(context, owner.email ?? "",
-                        "Email",
-                            authBloc, owner.id ?? "", "email");
-                            authBloc.add(const GetCacheDataEvent());
+                      onPressed: () async {
+                        await showProfileDialog(context, owner.email ?? "",
+                            "Email", authBloc, owner.id ?? "", "email");
+                        authBloc.add(const GetCacheDataEvent());
                       },
                       data: "${owner.email}"),
                   ProfileList(
-                      onPressed: () async{
-                       await showProfileDialog(
+                      onPressed: () async {
+                        await showProfileDialog(
                             context,
                             owner.phoneNumber ?? "",
                             "House GPS Address",
                             authBloc,
                             owner.id ?? "",
                             "house_GPS_address");
-                         authBloc.add(const GetCacheDataEvent());   
+                        authBloc.add(const GetCacheDataEvent());
                       },
                       data: "${owner.phoneNumber}"),
                   ProfileList(
-                      onPressed: () async{
-                       await showProfileDialog(
+                      onPressed: () async {
+                        await showProfileDialog(
                             context,
                             owner.townORCity ?? "",
                             "Town Or City",
                             authBloc,
                             owner.id ?? "",
                             "town_or_city");
-                          authBloc.add(const GetCacheDataEvent());  
+                        authBloc.add(const GetCacheDataEvent());
                       },
                       data: "${owner.townORCity}"),
                   ProfileList(
-                      onPressed: () async{
+                      onPressed: () async {
                         await showProfileDialog(
                             context,
                             owner.houseGPSAddress ?? "",
@@ -109,12 +111,12 @@ class _ProfilePageState extends State<ProfilePage> {
                             authBloc,
                             owner.id ?? "",
                             "house_GPS_address");
-                             authBloc.add(const GetCacheDataEvent());
+                        authBloc.add(const GetCacheDataEvent());
                       },
                       data: "${owner.houseGPSAddress}"),
                   ProfileList(
-                      onPressed: () async{
-                       await showProfileDialog(
+                      onPressed: () async {
+                        await showProfileDialog(
                           context,
                           owner.role ?? "",
                           "Role",
@@ -122,22 +124,26 @@ class _ProfilePageState extends State<ProfilePage> {
                           owner.id ?? "",
                           "role",
                         );
-                         authBloc.add(const GetCacheDataEvent());
+                        authBloc.add(const GetCacheDataEvent());
                       },
                       data: "${owner.role}"),
-                  ProfileList(onPressed: () async{
-                     await showPinChangeProfileDialog(
-                          context,
-                          owner.password ?? "",
-                          "Password",
-                          authBloc,
-                          owner.id ?? "",
-                          "password",
-                          owner.email ?? "",
-                          formKey
-                        );
-                         authBloc.add(const GetCacheDataEvent());
-                  }, data: "Change Pin"),
+                  ProfileList(
+                      onPressed: () async {
+                        await showPinChangeProfileDialog(
+                            context,
+                            owner.password ?? "",
+                            "Password",
+                            authBloc,
+                            owner.id ?? "",
+                            "password",
+                            owner.email ?? "",
+                            oldValue ?? "",
+                            newChangeValue ?? "",
+                            newRepeatValue ?? "",
+                            formKey);
+                        authBloc.add(const GetCacheDataEvent());
+                      },
+                      data: "Change Pin"),
                 ],
               );
             }
