@@ -27,7 +27,6 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     if (await networkInfo.isConnected) {
       try {
         final response = await remoteDatasource.signin(params);
-        
 
         return Right(response);
       } catch (e) {
@@ -195,6 +194,21 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       try {
         final response = await localDatasource.upLoadImage(params);
         //print(response);
+        return Right(response);
+      } catch (e) {
+        return Left(e.toString());
+      }
+    } else {
+      return Left(networkInfo.noNetworkMessage);
+    }
+  }
+
+  @override
+  Future<Either<String, bool>> checkPhoneNumberChange(
+      Map<String, dynamic> params) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await remoteDatasource.checkPhoneNumberChange(params);
         return Right(response);
       } catch (e) {
         return Left(e.toString());

@@ -6,6 +6,7 @@ import 'package:house_rental_admin/core/firebase/firebase_service.dart';
 import 'package:house_rental_admin/core/usecase/usecase.dart';
 import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/add_id.dart';
+import 'package:house_rental_admin/src/authentication/domain/usecases/check_phone_number.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/signin.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/get_cache_data.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/phone_number_login.dart';
@@ -31,6 +32,7 @@ class AuthenticationBloc
   final FirebaseService firebaseService;
   final AddId addId;
   final UpLoadImage upLoadImage;
+  final CheckPhoneNumberChange checkPhoneNumberChange;
   AuthenticationBloc({
     required this.verifyPhoneNumberLogin,
     required this.signup,
@@ -43,6 +45,7 @@ class AuthenticationBloc
     required this.updateUser,
     required this.addId,
     required this.upLoadImage,
+    required this.checkPhoneNumberChange,
   }) : super(AuthenticationInitial()) {
     on<SignupEvent>((event, emit) async {
       emit(SignupLoading());
@@ -201,6 +204,23 @@ class AuthenticationBloc
           (response) => UpLoadImageLoaded(imageURL: response)));
     });
 
-    
+    on<CheckPhoneNumberEvent>((event, emit) async {
+      emit(
+        CheckPhoneNumberChangeLoading(),
+      );
+      final response = await checkPhoneNumberChange.call(
+        event.params,
+      );
+      emit(
+        response.fold(
+          (error) => CheckPhoneNumberChangeError(
+            errorMessage: error,
+          ),
+          (response) => CheckPhoneNumberLoaded(
+            isNumberChecked: response,
+          ),
+        ),
+      );
+    });
   }
 }

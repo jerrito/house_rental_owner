@@ -101,4 +101,9 @@ class UpLoadImageEvent extends AuthenticationEvent {
   const UpLoadImageEvent({required this.params});
 }
 
+class CheckPhoneNumberEvent extends AuthenticationEvent {
+  final Map<String, dynamic> params;
+  const CheckPhoneNumberEvent({required this.params});
+}
+
 

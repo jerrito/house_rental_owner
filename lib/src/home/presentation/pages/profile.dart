@@ -50,16 +50,30 @@ class _ProfilePageState extends State<ProfilePage> {
               final owner = state.owner;
               return Column(
                 children: [
-                  Container(
-                      height: Sizes().height(context, 0.2),
-                      width: Sizes().width(context, 0.4),
-                      decoration: BoxDecoration(
-                          color: Colors.black26,
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: Image.network(owner.profileURL ?? "")
-                                  .image))),
+                  Stack(
+                    alignment:Alignment.bottomRight,
+                    children: [
+                      Container(
+                          height: Sizes().height(context, 0.2),
+                          width: Sizes().width(context, 0.4),
+                          decoration: BoxDecoration(
+                              color: Colors.black26,
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: Image.network(owner.profileURL ?? "")
+                                      .image),),),
+                                     GestureDetector(
+                                      onTap:(){
+
+                                      },
+                                       child:const  Icon(
+                                        size:30,
+                                          Icons.camera_alt_outlined
+                                        ),
+                                     )
+                    ],
+                  ),
                   ProfileList(
                       onPressed: () async {
                         await showProfileNameDialog(
@@ -72,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             owner.id ?? "",
                             );
 
-                        // authBloc.add(const GetCacheDataEvent());
+                       authBloc.add(const GetCacheDataEvent());
                       },
                       data: "${owner.firstName} ${owner.lastName}"),
                   ProfileList(
@@ -85,9 +99,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   ProfileList(
                       onPressed: () async {
                         await context.pushNamed(
-                          "phone_number",
+                          "phoneNumber",
                           queryParameters: {
-                            "isLogin":false,
+                            "isLogin":"false",
                             "oldNumberString":owner.phoneNumber
                           }
                         );

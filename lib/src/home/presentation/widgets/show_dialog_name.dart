@@ -25,7 +25,7 @@ showProfileNameDialog(
             horizontal: Sizes().width(context, 0.04),
             vertical: Sizes().height(context, 0.02),
           ),
-          title:  Text("Edit $label"),
+          title:  Text("Edit Name"),
           children: [
             Space().height(context, 0.02),
             FormBuilderField(

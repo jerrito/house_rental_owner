@@ -108,3 +108,14 @@ class UpLoadImageLoaded extends AuthenticationState {
   const UpLoadImageLoaded({required this.imageURL});
 }
 
+class CheckPhoneNumberLoaded extends AuthenticationState {
+  final bool isNumberChecked;
+  CheckPhoneNumberLoaded({required this.isNumberChecked});
+}
+
+class CheckPhoneNumberChangeError extends AuthenticationState {
+  final String errorMessage;
+ const CheckPhoneNumberChangeError({required this.errorMessage});
+}
+
+class CheckPhoneNumberChangeLoading extends AuthenticationState {}

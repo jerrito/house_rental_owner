@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:house_rental_admin/src/authentication/data/datasources/local_ds.dart';
 import 'package:house_rental_admin/src/authentication/data/models/owner_model.dart';
 import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart';
@@ -11,6 +14,7 @@ abstract class AuthenticationRemoteDatasource {
   Future<auth.User> verifyOTP(auth.PhoneAuthCredential credential);
   Future<void> updateUser(Map<String, dynamic> params);
   Future<void> addId(Map<String, dynamic> params);
+  Future<bool> checkPhoneNumberChange(Map<String, dynamic> params);
 }
 
 class AuthenticationRemoteDatasourceImpl
@@ -63,10 +67,10 @@ class AuthenticationRemoteDatasourceImpl
   Future<void> updateUser(Map<String, dynamic> params) async {
     final data = usersRef.doc(params["id"]);
     await data.update(params);
-    
-   await data.get().then((value){ 
-      localDatasource.cacheUserData(value.data()!);});
-    
+
+    await data.get().then((value) {
+      localDatasource.cacheUserData(value.data()!);
+    });
   }
 
   @override
@@ -93,5 +97,24 @@ class AuthenticationRemoteDatasourceImpl
       //return userData.data();
       //return value;
     });
+  }
+
+  @override
+  Future<bool> checkPhoneNumberChange(Map<String, dynamic> params) async {
+    OwnerModel? owner;
+    await usersRef
+        .where("phone_number", isEqualTo: params["start_number"])
+        .get()
+        .then((value) async {
+      var userData = value.docs.first;
+      owner = userData.data();
+      
+    });
+
+    if (params["phone_number"] == owner?.phoneNumber) {
+        return true;
+      }
+      return false;
+
   }
 }
