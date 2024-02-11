@@ -17,12 +17,13 @@ import 'package:string_validator/string_validator.dart';
 
 class PhoneNumberPage extends StatefulWidget {
   final bool isLogin;
-  final String? id, uid;
+  final String? id, uid, oldNumberString;
   const PhoneNumberPage({
     super.key,
     required this.isLogin,
     this.id,
     this.uid,
+    this.oldNumberString
   });
 
   @override
@@ -51,7 +52,8 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                         forceResendingToken: state.token,
                         verifyId: state.verifyId,
                         uid: widget.uid,
-                        id: widget.id),
+                        id: widget.id,
+                        oldNumberString:widget.oldNumberString),
                   );
                 }),
               );
@@ -107,7 +109,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Space().height(context, 0.030),
               const Text(
-                "Enter number to get a verification message",
+                "Enter your number to get a verification message",
                 textAlign: TextAlign.start,
               ),
               Space().height(context, 0.090),

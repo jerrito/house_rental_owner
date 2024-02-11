@@ -48,7 +48,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
 
         if(state is AddIdError){
           if(state.errorMessage== "No internet connection"){
-             context.goNamed("noInternet");
+             context.pushNamed("noInternet");
           }
           else{
              context.goNamed("signin");

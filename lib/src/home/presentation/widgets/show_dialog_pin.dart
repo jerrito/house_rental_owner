@@ -126,7 +126,7 @@ showPinChangeProfileDialog(
                   bloc: bloc,
                   listener: (context, state) async {
                     if (state is SigninLoaded) {
-                      print(newChangeValue);
+                      
                       var newBites = utf8.encode(newChangeValue);
                       var newPassword = sha512.convert(newBites);
                       Map<String, dynamic> params = {
@@ -188,7 +188,7 @@ showPinChangeProfileDialog(
                             label: "Update",
                             onTap: () {
                               // if (formKey.currentState?.validate() == true) {
-                              print(oldValue);
+                              
                               var bites = utf8.encode(oldValue);
                               var password = sha512.convert(bites);
                               Map<String, dynamic> params = {

@@ -8,13 +8,14 @@ import 'package:house_rental_admin/src/authentication/presentation/bloc/authenti
 import 'package:house_rental_admin/src/authentication/presentation/widgets/default_button.dart';
 import 'package:house_rental_admin/src/authentication/presentation/widgets/default_textfield.dart';
 
-showProfileDialog(
+showProfileNameDialog(
   BuildContext context,
   String data,
+  String data2,
   String? label,
+  String? label2,
   AuthenticationBloc bloc,
   String id,
-  String update,
 ) {
   return showDialog(
       context: context,
@@ -28,13 +29,25 @@ showProfileDialog(
           children: [
             Space().height(context, 0.02),
             FormBuilderField(
-              name:"",
+              name:"firstName",
               builder:(context)=>
                DefaultTextfield(
                 initialValue: data,
                 label: "Enter $label",
                 onChanged: (value) {
                   data = value!;
+                },
+              ),
+            ),
+             Space().height(context, 0.02),
+            FormBuilderField(
+              name:"secondName",
+              builder:(context)=>
+               DefaultTextfield(
+                initialValue: data2,
+                label: "Enter $label2",
+                onChanged: (value) {
+                  data2 = value!;
                 },
               ),
             ),
@@ -72,7 +85,8 @@ showProfileDialog(
                             onTap: () {
                               Map<String, dynamic> params = {
                                 "id": id,
-                                update: data
+                                "first_name": data,
+                                "last_name": data2,
                               };
                               bloc.add(
                                 UpdateUserEvent(params: params),

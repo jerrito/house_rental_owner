@@ -11,6 +11,7 @@ import 'package:house_rental_admin/src/authentication/presentation/pages/signup_
 import 'package:house_rental_admin/src/errors/presentation/pages/no_internet_page.dart';
 import 'package:house_rental_admin/src/home/data/models/house_model.dart';
 import 'package:house_rental_admin/src/home/presentation/pages/add_home.dart';
+import 'package:house_rental_admin/src/home/presentation/pages/change_number_page.dart';
 import 'package:house_rental_admin/src/home/presentation/pages/edit_home.dart';
 import 'package:house_rental_admin/src/home/presentation/pages/home_page.dart';
 import 'package:house_rental_admin/src/home/presentation/pages/profile.dart';
@@ -69,6 +70,7 @@ GoRouter goRouter() {
             isLogin: bool.parse(
               state.uri.queryParameters["isLogin"].toString(),
             ),
+            oldNumberString: state.uri.queryParameters["oldNumberString"].toString(),
           ),
         ),
 
@@ -132,7 +134,13 @@ GoRouter goRouter() {
             ),
           ],
         ),
+        GoRoute(path: "changeNumber",
+        builder: (context, state) =>
+         ChangeNumberPage(
+          phoneNumber: state.uri.queryParameters["phoneNumber"].toString(),
+        ),),
       ],
+      
     ),
   ]);
 }

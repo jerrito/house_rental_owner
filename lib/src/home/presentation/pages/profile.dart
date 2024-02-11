@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:go_router/go_router.dart';
 import 'package:house_rental_admin/core/size/sizes.dart';
 import 'package:house_rental_admin/locator.dart';
 import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart';
@@ -9,6 +10,7 @@ import 'package:house_rental_admin/src/home/presentation/bloc/home_bloc.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/bottom_nav_bar.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/profile_list.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/show_dialog.dart';
+import 'package:house_rental_admin/src/home/presentation/widgets/show_dialog_name.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/show_dialog_pin.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -60,15 +62,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                   .image))),
                   ProfileList(
                       onPressed: () async {
-                        await showProfileDialog(
+                        await showProfileNameDialog(
                             context,
-                            owner.houseGPSAddress ?? "",
-                            "House GPS Address",
+                            owner.firstName ?? "",
+                            owner.lastName ?? "",
+                            "First Name",
+                            "Last Name",
                             authBloc,
                             owner.id ?? "",
-                            "house_GPS_address");
+                            );
 
-                        authBloc.add(const GetCacheDataEvent());
+                        // authBloc.add(const GetCacheDataEvent());
                       },
                       data: "${owner.firstName} ${owner.lastName}"),
                   ProfileList(
@@ -80,13 +84,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       data: "${owner.email}"),
                   ProfileList(
                       onPressed: () async {
-                        await showProfileDialog(
-                            context,
-                            owner.phoneNumber ?? "",
-                            "House GPS Address",
-                            authBloc,
-                            owner.id ?? "",
-                            "house_GPS_address");
+                        await context.pushNamed(
+                          "phone_number",
+                          queryParameters: {
+                            "isLogin":false,
+                            "oldNumberString":owner.phoneNumber
+                          }
+                        );
                         authBloc.add(const GetCacheDataEvent());
                       },
                       data: "${owner.phoneNumber}"),

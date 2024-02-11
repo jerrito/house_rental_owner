@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:house_rental_admin/core/size/sizes.dart';
 import 'package:house_rental_admin/core/spacing/whitspacing.dart';
 import 'package:house_rental_admin/locator.dart';
@@ -15,7 +16,7 @@ import 'package:telephony/telephony.dart';
 import 'package:oktoast/oktoast.dart';
 
 class OTPRequest {
-  String? verifyId, phoneNumber, id, uid;
+  String? verifyId, phoneNumber, id, uid, oldNumberString;
   int? forceResendingToken;
   bool isLogin;
   //void Function()? onSuccessCallback;
@@ -27,6 +28,7 @@ class OTPRequest {
     this.phoneNumber,
     this.forceResendingToken,
     required this.isLogin,
+    this.oldNumberString,
     //  this.onSuccessCallback,
   });
 }
@@ -132,21 +134,24 @@ class _OTPPageState extends State<OTPPage> {
                   context,
                   MaterialPageRoute(builder: (context) {
                     return SignupPage(
-                      phoneNumber: state.user.phoneNumber!,
+                      phoneNumber: state.user.phoneNumber ?? "",
                       uid: state.user.uid,
                     );
                   }),
                 );
+              } else if (widget.otpRequest.oldNumberString != null) {
+                context.pushNamed("changeNumber",
+                queryParameters: {
+                  "phoneNumber":state.user.phoneNumber 
+                });
               } else {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
                     return HomePage(
-                      isLogin:widget.otpRequest.isLogin,
-                      phoneNumber:widget.otpRequest.phoneNumber,
-                      
+                      isLogin: widget.otpRequest.isLogin,
+                      phoneNumber: widget.otpRequest.phoneNumber,
                       uid: state.user.uid,
-                      
                     );
                   }),
                 );
