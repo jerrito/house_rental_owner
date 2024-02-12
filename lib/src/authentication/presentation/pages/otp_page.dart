@@ -129,12 +129,13 @@ class _OTPPageState extends State<OTPPage> {
               debugPrint("calling call back function");
               //widget.otpRequest.onSuccessCallback?.call();
               //print(state.user);
-              if (!widget.otpRequest.isLogin) {
-                Navigator.push(
+              if (widget.otpRequest.isLogin) {
+               Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return SignupPage(
-                      phoneNumber: state.user.phoneNumber ?? "",
+                    return HomePage(
+                      isLogin: widget.otpRequest.isLogin,
+                      phoneNumber: widget.otpRequest.phoneNumber,
                       uid: state.user.uid,
                     );
                   }),
@@ -145,16 +146,16 @@ class _OTPPageState extends State<OTPPage> {
                   "phoneNumber":state.user.phoneNumber 
                 });
               } else {
-                Navigator.push(
+                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
-                    return HomePage(
-                      isLogin: widget.otpRequest.isLogin,
-                      phoneNumber: widget.otpRequest.phoneNumber,
+                    return SignupPage(
+                      phoneNumber: state.user.phoneNumber ?? "",
                       uid: state.user.uid,
                     );
                   }),
                 );
+                
                 //context.goNamed("signin");
               }
             }

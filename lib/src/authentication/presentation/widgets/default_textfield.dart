@@ -9,6 +9,7 @@ class DefaultTextfield extends StatelessWidget {
   final TextEditingController? controller;
   final String? hintText, initialValue, errorText, label;
   final double? height;
+  final bool? enabled;
   final TextInputType? textInputType;
   const DefaultTextfield(
       {super.key,
@@ -20,6 +21,7 @@ class DefaultTextfield extends StatelessWidget {
       this.height,
        this.label,
       this.initialValue,
+      this.enabled,
       });
 
   @override
@@ -38,6 +40,7 @@ class DefaultTextfield extends StatelessWidget {
           SizedBox(
             height: height,
             child: TextFormField(
+              enabled: enabled,
              initialValue: initialValue,
               keyboardType: textInputType,
               controller: controller,

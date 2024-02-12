@@ -9,7 +9,7 @@ import 'package:house_rental_admin/assets/svgs/svg_constants.dart';
 import 'package:house_rental_admin/core/size/sizes.dart';
 import 'package:house_rental_admin/core/spacing/whitspacing.dart';
 import 'package:house_rental_admin/core/strings/app_strings.dart';
-import 'package:house_rental_admin/core/theme%20copy/colors.dart';
+import 'package:house_rental_admin/core/theme/colors.dart';
 import 'package:house_rental_admin/core/usecase/usecase.dart';
 import 'package:house_rental_admin/core/widgets/bottom_sheet.dart';
 import 'package:house_rental_admin/locator.dart';

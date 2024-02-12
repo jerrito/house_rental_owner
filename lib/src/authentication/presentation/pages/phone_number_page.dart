@@ -171,7 +171,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Enter Phone Number"),
+                         Text(widget.oldNumberString!=null?"Enter Old Phone Number": "Enter Phone Number"),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [

@@ -135,7 +135,7 @@ GoRouter goRouter() {
             ),
           ],
         ),
-        GoRoute(path: "changeNumber",
+        GoRoute(path: "changeNumber",name: "changeNumber",
         builder: (context, state) =>
          ChangeNumberPage(
           phoneNumber: state.uri.queryParameters["phoneNumber"].toString(),
