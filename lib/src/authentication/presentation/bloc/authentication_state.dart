@@ -110,7 +110,7 @@ class UpLoadImageLoaded extends AuthenticationState {
 
 class CheckPhoneNumberLoaded extends AuthenticationState {
   final bool isNumberChecked;
-  CheckPhoneNumberLoaded({required this.isNumberChecked});
+ const CheckPhoneNumberLoaded({required this.isNumberChecked});
 }
 
 class CheckPhoneNumberChangeError extends AuthenticationState {

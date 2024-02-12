@@ -68,12 +68,14 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       Function(auth.FirebaseAuthException) onFailed) async {
     if (await networkInfo.isConnected) {
       try {
-        final user = await firebaseService.getUser(phoneNumber: phoneNumber);
-        if (user != null) {
-          // print("User already known");
-          return const Left("Number already registered");
-        } else {
-          return Right(await firebaseAuth.verifyPhoneNumber(
+        //final user = await firebaseService.getUser(phoneNumber: phoneNumber);
+        // if (user != null) {
+        //   // print("User already known");
+        //   return const Left("Number already registered");
+        // } else {
+         return 
+          Right(
+            await firebaseAuth.verifyPhoneNumber(
             phoneNumber: phoneNumber,
             timeout: const Duration(seconds: 120),
             verificationCompleted: (auth.PhoneAuthCredential credential) async {
@@ -91,7 +93,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
             },
           ));
         }
-      } catch (e) {
+       catch (e) {
         onFailed(
             auth.FirebaseAuthException(message: e.toString(), code: 'UNKNOWN'));
         return Left(e.toString());

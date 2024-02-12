@@ -9,6 +9,7 @@ import 'package:house_rental_admin/src/authentication/data/datasources/remote_ds
 import 'package:house_rental_admin/src/authentication/data/repositories/authentication_repository_impl.dart';
 import 'package:house_rental_admin/src/authentication/domain/repositories/authentication_repository.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/add_id.dart';
+import 'package:house_rental_admin/src/authentication/domain/usecases/check_phone_number.dart';
 
 import 'package:house_rental_admin/src/authentication/domain/usecases/signin.dart';
 
@@ -56,6 +57,7 @@ Future<void> initDependencies() async {
       addId: locator(),
       verifyPhoneNumberLogin: locator(),
       upLoadImage: locator(),
+      checkPhoneNumberChange: locator(),
     ),
   );
 
@@ -75,6 +77,12 @@ Future<void> initDependencies() async {
   );
 
   //usecases
+
+  locator.registerLazySingleton(
+    ()=> CheckPhoneNumberChange(
+      repository: locator(),
+    )
+  );
  locator.registerLazySingleton(
     () => AddLocation(
       repository: locator(),

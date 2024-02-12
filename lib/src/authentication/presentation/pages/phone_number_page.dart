@@ -18,13 +18,12 @@ import 'package:string_validator/string_validator.dart';
 class PhoneNumberPage extends StatefulWidget {
   final bool isLogin;
   final String? id, uid, oldNumberString;
-  const PhoneNumberPage({
-    super.key,
-    required this.isLogin,
-    this.id,
-    this.uid,
-    this.oldNumberString
-  });
+  const PhoneNumberPage(
+      {super.key,
+      required this.isLogin,
+      this.id,
+      this.uid,
+      this.oldNumberString});
 
   @override
   State<PhoneNumberPage> createState() => _PhoneNumberPageState();
@@ -37,7 +36,9 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Verify Number")),
+        appBar: AppBar(
+          title: const Text("Verify Number"),
+        ),
         bottomSheet: BlocConsumer(
           bloc: authBloc,
           listener: (context, state) async {
@@ -53,7 +54,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                         verifyId: state.verifyId,
                         uid: widget.uid,
                         id: widget.id,
-                        oldNumberString:widget.oldNumberString),
+                        oldNumberString: widget.oldNumberString),
                   );
                 }),
               );
@@ -82,9 +83,31 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text(state.errorMessage)));
             }
+            if (state is CheckPhoneNumberChangeError) {
+              authBloc.add(
+                PhoneNumberEvent(
+                    phoneNumber: "+233${phoneNumberController.text}"),
+              );
+            }
+            if (state is CheckPhoneNumberLoaded) {
+              if (state.isNumberChecked == true) {
+                authBloc.add(
+                  PhoneNumberEvent(
+                      phoneNumber: "+233${phoneNumberController.text}"),
+                );
+              } else {
+                print("Entered number not equal to old number");
+              }
+            }
+            if (state is CheckPhoneNumberChangeError) {
+              print(state.errorMessage);
+            }
           },
           builder: (context, state) {
             if (state is VerifyPhoneNumberLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state is CheckPhoneNumberChangeLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
@@ -93,10 +116,20 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                 label: "Validate",
                 onPressed: () {
                   if (formKey.currentState?.saveAndValidate() == true) {
-                    authBloc.add(
-                      PhoneNumberEvent(
-                          phoneNumber: "+233${phoneNumberController.text}"),
-                    );
+                    if (widget.oldNumberString != null) {
+                      Map<String, dynamic> params = {
+                        "start_number": widget.oldNumberString,
+                        "phone_number": "+233${phoneNumberController.text}"
+                      };
+                      authBloc.add(
+                        CheckPhoneNumberEvent(params: params),
+                      );
+                    } else {
+                      authBloc.add(
+                        PhoneNumberEvent(
+                            phoneNumber: "+233${phoneNumberController.text}"),
+                      );
+                    }
                   }
                 });
           },
@@ -123,7 +156,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                     if (!isNumeric(value!)) {
                       return "Only numbers required";
                     }
-                    if (!isLength(value, 9,9)) {
+                    if (!isLength(value, 9, 9)) {
                       return 'Nine numbers required';
                     }
 
@@ -131,10 +164,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                   },
                   onChanged: (value) {
                     if (value!.startsWith("0", 0)) {
-                  
-                     
-                     phoneNumberController.text=value.substring(1);
-                  
+                      phoneNumberController.text = value.substring(1);
                     }
                   },
                   builder: (field) {
@@ -146,21 +176,23 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             SizedBox(
-                              height: 35,
-                              // decoration: BoxDecoration(
-                              //   borderRadius: BorderRadius.circular(10),
-                              //   border: Border.all(
-                              //    // color: Colors.black
-                              //   )
-                              // ),
-                              child:Row(
-                                children: [
-                                  SvgPicture.asset(ghanaSVG,width: 30,),
-                                  Space().width(context, 0.005),
+                                height: 35,
+                                // decoration: BoxDecoration(
+                                //   borderRadius: BorderRadius.circular(10),
+                                //   border: Border.all(
+                                //    // color: Colors.black
+                                //   )
+                                // ),
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      ghanaSVG,
+                                      width: 30,
+                                    ),
+                                    Space().width(context, 0.005),
                                     const Text("+233"),
-                                ],
-                              )
-                            ),
+                                  ],
+                                )),
                             SizedBox(
                               width: 270,
                               child: DefaultTextfield(

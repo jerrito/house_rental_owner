@@ -60,6 +60,7 @@ GoRouter goRouter() {
               forceResendingToken: int.parse(state
                   .uri.queryParameters["force_resending_token"]
                   .toString()),
+                  oldNumberString: state.uri.queryParameters["oldNumberString"].toString()
             ),
           ),
         ),

@@ -108,13 +108,12 @@ class AuthenticationRemoteDatasourceImpl
         .then((value) async {
       var userData = value.docs.first;
       owner = userData.data();
-      
     });
 
     if (params["phone_number"] == owner?.phoneNumber) {
-        return true;
-      }
+      return true;
+    } else {
       return false;
-
+    }
   }
 }
