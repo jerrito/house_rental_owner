@@ -170,11 +170,28 @@ class _ChangeNumberPageState extends State<ChangeNumberPage> {
             );
             print(state.errorMessage);
           }
+
+          if (state is GetUserError) {
+            Map<String, dynamic> params = {
+              "id": id ?? "",
+              "phone_number": newNumberValue ?? newNumberController.text
+            };
+            authBloc.add(
+              UpdateUserEvent(params: params),
+            );
+          }
+
+          if (state is GetUserLoaded) {
+           const  OKToast(
+              child: Text(
+                "Number already registered",
+              ),
+            );
+          }
+
           if (state is GetCacheDataLoaded) {
             id = state.owner.id;
-            setState(() {
-              
-            });
+            setState(() {});
           }
         },
         builder: (context, state) {
@@ -182,11 +199,10 @@ class _ChangeNumberPageState extends State<ChangeNumberPage> {
               onPressed: () {
                 if (formKey.currentState?.validate() == true) {
                   Map<String, dynamic> params = {
-                    "id": id ?? "",
                     "phone_number": newNumberValue ?? newNumberController.text
                   };
                   authBloc.add(
-                    UpdateUserEvent(params: params),
+                    GetUserEvent(params: params),
                   );
                 }
               },

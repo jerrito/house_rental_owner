@@ -106,4 +106,9 @@ class CheckPhoneNumberEvent extends AuthenticationEvent {
   const CheckPhoneNumberEvent({required this.params});
 }
 
+class GetUserEvent extends AuthenticationEvent {
+  final Map<String, dynamic> params;
+  const GetUserEvent({required this.params});
+}
+
 

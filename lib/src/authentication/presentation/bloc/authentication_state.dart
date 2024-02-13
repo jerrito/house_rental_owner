@@ -110,12 +110,24 @@ class UpLoadImageLoaded extends AuthenticationState {
 
 class CheckPhoneNumberLoaded extends AuthenticationState {
   final bool isNumberChecked;
- const CheckPhoneNumberLoaded({required this.isNumberChecked});
+  const CheckPhoneNumberLoaded({required this.isNumberChecked});
 }
 
 class CheckPhoneNumberChangeError extends AuthenticationState {
   final String errorMessage;
- const CheckPhoneNumberChangeError({required this.errorMessage});
+  const CheckPhoneNumberChangeError({required this.errorMessage});
 }
 
 class CheckPhoneNumberChangeLoading extends AuthenticationState {}
+
+class GetUserLoaded extends AuthenticationState {
+  final Owner? owner;
+  const GetUserLoaded({required this.owner});
+}
+
+class GetUserError extends AuthenticationState {
+  final String errorMessage;
+  const GetUserError({required this.errorMessage});
+}
+
+class GetUserLoading extends AuthenticationState {}

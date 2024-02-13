@@ -7,6 +7,7 @@ import 'package:house_rental_admin/core/usecase/usecase.dart';
 import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/add_id.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/check_phone_number.dart';
+import 'package:house_rental_admin/src/authentication/domain/usecases/get_user.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/signin.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/get_cache_data.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/phone_number_login.dart';
@@ -33,6 +34,7 @@ class AuthenticationBloc
   final AddId addId;
   final UpLoadImage upLoadImage;
   final CheckPhoneNumberChange checkPhoneNumberChange;
+  final GetUser getUser;
   AuthenticationBloc({
     required this.verifyPhoneNumberLogin,
     required this.signup,
@@ -46,6 +48,7 @@ class AuthenticationBloc
     required this.addId,
     required this.upLoadImage,
     required this.checkPhoneNumberChange,
+    required this.getUser,
   }) : super(AuthenticationInitial()) {
     on<SignupEvent>((event, emit) async {
       emit(SignupLoading());
@@ -218,6 +221,25 @@ class AuthenticationBloc
           ),
           (response) => CheckPhoneNumberLoaded(
             isNumberChecked: response,
+          ),
+        ),
+      );
+    });
+
+     on<GetUserEvent>((event, emit) async {
+      emit(
+        GetUserLoading(),
+      );
+      final response = await getUser.call(
+        event.params,
+      );
+      emit(
+        response.fold(
+          (error) => GetUserError(
+            errorMessage: error,
+          ),
+          (response) => GetUserLoaded(
+            owner: response,
           ),
         ),
       );
