@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:house_rental_admin/src/authentication/data/datasources/local_ds.dart';
 import 'package:house_rental_admin/src/authentication/data/models/owner_model.dart';
 import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart';

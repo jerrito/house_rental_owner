@@ -120,8 +120,6 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
   Future<PlaceSearchModel> getPlaceByLatLng(Map<String, dynamic> params) async {
     final response = await http.get(Uri.parse(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=${params["lat"]}%2C${params["lng"]}&region=gh&key=$api"));
-    print(response.body);
-    print(jsonDecode(response.body));
     return PlaceSearchModel.fromJson(jsonDecode(response.body));
   }
   

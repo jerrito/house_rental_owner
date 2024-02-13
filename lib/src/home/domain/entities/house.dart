@@ -1,16 +1,16 @@
 import 'package:equatable/equatable.dart';
+import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart';
 
 class HouseDetail extends Equatable {
-  final String? houseName, owner, phoneNumber, description, category;
-  final num? amount, bedRoomCount, bathRoomCount, lat, lng;
+  final String? houseName, description, category;
+  final num? amount, bedRoomCount, bathRoomCount;
   final bool? isAvailable;
-   final String? formatedAddress;
+  final HouseLocation houseLocation;
   final List<String>? images;
-
+  final Owner? owner;
   const HouseDetail({
     required this.category,
     required this.owner,
-    required this.phoneNumber,
     required this.houseName,
     required this.description,
     required this.amount,
@@ -18,10 +18,7 @@ class HouseDetail extends Equatable {
     required this.bedRoomCount,
     required this.isAvailable,
     required this.bathRoomCount,
-    required this.formatedAddress,
-    required this.lat,
-    required this.lng,
-
+    required this.houseLocation,
   });
 
   @override
@@ -30,14 +27,11 @@ class HouseDetail extends Equatable {
         description,
         owner,
         amount,
-        phoneNumber,
         bedRoomCount,
         bathRoomCount,
         images,
         isAvailable,
-        lat,
-        lng,
-        formatedAddress,
+        houseLocation,
         category
       ];
 }
@@ -46,8 +40,9 @@ class HouseLocation extends Equatable {
   final String? formatedAddress;
   final num? lat, lng;
 
-  const HouseLocation({required this.formatedAddress, required this.lat, required this.lng});
+  const HouseLocation(
+      {required this.formatedAddress, required this.lat, required this.lng});
 
   @override
-  List<Object?> get props => [formatedAddress, lat,lng];
+  List<Object?> get props => [formatedAddress, lat, lng];
 }

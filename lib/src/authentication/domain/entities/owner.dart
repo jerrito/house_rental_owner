@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 
 class Owner extends Equatable {
   final String? firstName,
-  
       lastName,
       phoneNumber,
       profileURL,

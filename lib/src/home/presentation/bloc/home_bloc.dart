@@ -160,6 +160,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           (response) => PlaceSearchLoaded(placeSearch: response),
         ),
       );
+      // ignore: unused_label
       transformer:
       restartable();
     });

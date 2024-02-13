@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                       final id=state.houses.docs[index].id;
                       return HouseRowDetails(
                         onTap: () {
-                          print(houseDetail);
+                          
                           // context.pushNamed("editHome",
                           //     queryParameters: 
                           //     {"house": state.houses.docs[index].data()});

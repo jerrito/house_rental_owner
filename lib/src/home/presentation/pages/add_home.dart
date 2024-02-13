@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -13,10 +15,10 @@ import 'package:house_rental_admin/core/theme/colors.dart';
 import 'package:house_rental_admin/core/usecase/usecase.dart';
 import 'package:house_rental_admin/core/widgets/bottom_sheet.dart';
 import 'package:house_rental_admin/locator.dart';
+import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart';
 import 'package:house_rental_admin/src/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:house_rental_admin/src/authentication/presentation/widgets/default_button.dart';
 import 'package:house_rental_admin/src/authentication/presentation/widgets/default_textfield.dart';
-import 'package:house_rental_admin/src/home/data/models/house_model.dart';
 import 'package:house_rental_admin/src/home/domain/entities/house.dart';
 import 'package:house_rental_admin/src/home/presentation/bloc/home_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -46,12 +48,14 @@ class _AddHomePageState extends State<AddHomePage> {
   final bathRoomController = TextEditingController();
   final bedRoomController = TextEditingController();
   final descriptionController = TextEditingController();
+  Owner? owner;
   bool isImageAvailable = true;
   List<String>? images = [];
   HouseLocation? houseLocation;
 
   @override
   void initState() {
+    authBloc.add(const GetCacheDataEvent());
     super.initState();
   }
 
@@ -69,11 +73,10 @@ class _AddHomePageState extends State<AddHomePage> {
               "bed_room_count": num.parse(bedRoomController.text),
               "bath_room_count": num.parse(bathRoomController.text),
               "images": state.imageURL,
-              "owner": widget.name,
+              "owner": owner?.toMap() ,
               "phone_number": widget.phoneNumber,
-              "formatted_address": houseLocation?.formatedAddress ?? "Unknown",
-              "lat": houseLocation?.lat ?? 5.55,
-              "lng": houseLocation?.lng ?? -0.55,
+              "house_location": houseLocation,
+              "category":"",
               //?.toMap(),
 
               //"id": widget.id
@@ -135,390 +138,384 @@ class _AddHomePageState extends State<AddHomePage> {
       appBar: AppBar(
         title: const Text("Add Home or Room"),
       ),
-      body: FormBuilder(
-        key: formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Sizes().width(context, 0.04)),
-                child: FormBuilderField<String>(
-                    name: "homeName",
-                    validator: (value) {
-                      if (value?.isEmpty ?? true) {
-                        return fieldRequired;
-                      }
-                      if (value!.length <= 1) {
-                        return mustBeCharacters;
-                      }
-                      return null;
-                    },
-                    builder: (context) {
-                      return DefaultTextfield(
-                        controller: homeNameController,
-                        hintText: "Enter home name",
-                        label: "Home name",
-                        errorText: context.errorText,
-                        onChanged: (p0) => context.didChange(p0),
-                      );
-                    }),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Sizes().width(context, 0.04)),
-                child: FormBuilderField<num>(
-                    name: "rentAmount",
-                    validator: (value) {
-                      if (value == null || value.toString().isEmpty) {
-                        return numberRequired;
-                      }
-                      if (value.isNaN) {
-                        return numberRequired;
-                      }
-                      if (value <= 1) {
-                        return mustBeAtleast;
-                      }
-
-                      return null;
-                    },
-                    builder: (context) {
-                      return DefaultTextfield(
-                          textInputType: TextInputType.number,
-                          controller: amountController,
-                          hintText: "Enter rent amount",
-                          label: "Rent amount",
-                          errorText: context.errorText,
-                          onChanged: (p0) => context.didChange(
-                                (num.parse(p0!)),
-                              ));
-                    }),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Sizes().width(context, 0.04)),
-                child: FormBuilderField<int>(
-                    name: "bedRooms",
-                    validator: (value) {
-                      if (value == null || value.toString().isEmpty) {
-                        return numberRequired;
-                      }
-                      if (value.isNaN) {
-                        return numberRequired;
-                      }
-                      if (value <= 0) {
-                        return mustBeAtleast;
-                      }
-                      if (value >= 13) {
-                        return mustBeAtmost;
-                      }
-                      return null;
-                    },
-                    builder: (context) {
-                      return DefaultTextfield(
-                        textInputType: TextInputType.number,
-                        controller: bedRoomController,
-                        hintText: "Enter number of Bed Rooms",
-                        label: "Number of Bed Rooms",
-                        errorText: context.errorText,
-                        onChanged: (p0) => context.didChange(
-                          (int.parse(p0!)),
-                        ),
-                      );
-                    }),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Sizes().width(context, 0.04)),
-                child: FormBuilderField<int>(
-                    name: "bathRooms",
-                    validator: (value) {
-                      if (value?.isNaN ?? true) {
-                        return numberRequired;
-                      }
-                      if (value! <= 0) {
-                        return mustBeAtleast;
-                      }
-                      if (value >= 13) {
-                        return mustBeAtmost;
-                      }
-                      return null;
-                    },
-                    builder: (context) {
-                      return DefaultTextfield(
-                        textInputType: TextInputType.number,
-                        controller: bathRoomController,
-                        hintText: "Enter number of Bath Rooms",
-                        label: "Number of Bath Rooms",
-                        errorText: context.errorText,
-                        onChanged: (p0) => context.didChange(
-                          (int.parse(p0!)),
-                        ),
-                      );
-                    }),
-              ),
-              FormBuilderField<String>(
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return "Location  required";
-                    }
-                    if (value!.length <= 1) {
-                      return mustBeCharacters;
-                    }
-                    return null;
-                  },
-                  name: "location",
-                  builder: (field) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: Sizes().width(context, 0.04),
-                      ),
-                      child: BlocConsumer(
-                        bloc: homeBloc2,
-                        builder: (context, state) {
-                          if (state is AddLocationLoaded) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                SizedBox(
-                                  height: Sizes().height(context, 0.05),
-                                  child: Center(
-                                    child: Text(state.houseLocation
-                                                .formatedAddress!.length <=
-                                            35
-                                        ? state
-                                            .houseLocation.formatedAddress!
-                                        : "${state.houseLocation.formatedAddress?.substring(0, 35)}..."),
-                                  ),
-                                ),
-                                Space().width(context, 0.02),
-                                GestureDetector(
-                                  onTap: () async {
-                                  
-
-                                    final result = await buildSelectLocation(
-                                        context);
-                                    if (mounted) {
-                                      // homeBloc2
-                                      //   .add(AddLocationEvent(params: result));
-                                       print(result);
-                                    print(result as Map<String, dynamic>);
-
-                                    };
-
-                                    print(result);
-                                    print(result as Map<String, dynamic>);
-                                    
-                                  },
-                                  child: SvgPicture.asset(
-                                    editSVG,
-                                    color: housePrimaryColor,
-                                  ),
-                                ),
-                              ],
-                            );
+      body: BlocListener(
+        bloc: authBloc,
+        listener: (context, state) {
+          if(state is GetCacheDataLoaded){
+          owner=  state.owner;
+          setState((){});
+          }
+        },
+          child: FormBuilder(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Sizes().width(context, 0.04)),
+                    child: FormBuilderField<String>(
+                        name: "homeName",
+                        validator: (value) {
+                          if (value?.isEmpty ?? true) {
+                            return fieldRequired;
                           }
-                          return InputDecorator(
-                            decoration: InputDecoration(
-                                enabledBorder: const UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.white)),
-                                errorText: field.errorText),
-                            child: DefaultButton(
-                              label: "Add Location",
-                              onTap: () async {
-                               
-
-                                final result =
-                                    await buildSelectLocation(context);
-                                    if (mounted) {
-                                      // print(result);
-                                    print(result as Map<String, dynamic>);
-                                      //  homeBloc2
-                                      //   .add(AddLocationEvent(params: result));
-                                      
-
-                                    }
-                               // if (!mounted) return;
-                                print("hh${result}");
-                                homeBloc2.add(AddLocationEvent(
-                                    params:result));
-                                
-                              },
+                          if (value!.length <= 1) {
+                            return mustBeCharacters;
+                          }
+                          return null;
+                        },
+                        builder: (context) {
+                          return DefaultTextfield(
+                            controller: homeNameController,
+                            hintText: "Enter home name",
+                            label: "Home name",
+                            errorText: context.errorText,
+                            onChanged: (p0) => context.didChange(p0),
+                          );
+                        }),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Sizes().width(context, 0.04)),
+                    child: FormBuilderField<num>(
+                        name: "rentAmount",
+                        validator: (value) {
+                          if (value == null || value.toString().isEmpty) {
+                            return numberRequired;
+                          }
+                          if (value.isNaN) {
+                            return numberRequired;
+                          }
+                          if (value <= 1) {
+                            return mustBeAtleast;
+                          }
+          
+                          return null;
+                        },
+                        builder: (context) {
+                          return DefaultTextfield(
+                              textInputType: TextInputType.number,
+                              controller: amountController,
+                              hintText: "Enter rent amount",
+                              label: "Rent amount",
+                              errorText: context.errorText,
+                              onChanged: (p0) => context.didChange(
+                                    (num.parse(p0!)),
+                                  ));
+                        }),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Sizes().width(context, 0.04)),
+                    child: FormBuilderField<int>(
+                        name: "bedRooms",
+                        validator: (value) {
+                          if (value == null || value.toString().isEmpty) {
+                            return numberRequired;
+                          }
+                          if (value.isNaN) {
+                            return numberRequired;
+                          }
+                          if (value <= 0) {
+                            return mustBeAtleast;
+                          }
+                          if (value >= 13) {
+                            return mustBeAtmost;
+                          }
+                          return null;
+                        },
+                        builder: (context) {
+                          return DefaultTextfield(
+                            textInputType: TextInputType.number,
+                            controller: bedRoomController,
+                            hintText: "Enter number of Bed Rooms",
+                            label: "Number of Bed Rooms",
+                            errorText: context.errorText,
+                            onChanged: (p0) => context.didChange(
+                              (int.parse(p0!)),
                             ),
                           );
-                        },
-                        listener: (BuildContext context, state) {
-                          if (state is AddLocationLoaded) {
-                            houseLocation = state.houseLocation;
-                            setState(() {});
-                            field.didChange(houseLocation?.formatedAddress ?? "");
+                        }),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Sizes().width(context, 0.04)),
+                    child: FormBuilderField<int>(
+                        name: "bathRooms",
+                        validator: (value) {
+                          if (value?.isNaN ?? true) {
+                            return numberRequired;
                           }
-                          if (state is AddLocationError) {
-                            OKToast(child: Text(state.errorMessage));
+                          if (value! <= 0) {
+                            return mustBeAtleast;
                           }
+                          if (value >= 13) {
+                            return mustBeAtmost;
+                          }
+                          return null;
                         },
-                      ),
-                    );
-                  }),
-              Space().height(context, 0.02),
-
-              ToggleButtons(isSelected: const [], children: const []),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Sizes().width(context, 0.04)),
-                child: Row(
-                  children: [
-                    const Text("House Image(s)"),
-                    Space().width(context, 0.03),
-                    GestureDetector(
-                      onTap: () {
-                        homeBloc3.add(
-                          AddMultipleImageEvent(
-                            params: NoParams(),
-                          ),
-                        );
+                        builder: (context) {
+                          return DefaultTextfield(
+                            textInputType: TextInputType.number,
+                            controller: bathRoomController,
+                            hintText: "Enter number of Bath Rooms",
+                            label: "Number of Bath Rooms",
+                            errorText: context.errorText,
+                            onChanged: (p0) => context.didChange(
+                              (int.parse(p0!)),
+                            ),
+                          );
+                        }),
+                  ),
+                  FormBuilderField<String>(
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return "Location  required";
+                        }
+                        if (value!.length <= 1) {
+                          return mustBeCharacters;
+                        }
+                        return null;
                       },
-                      child: SvgPicture.asset(
-                        editSVG,
-                        color: housePrimaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Space().height(context, 0.005),
-              FormBuilderField<List<String>>(
-                  name: "house_images",
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return fieldRequired;
-                    }
-
-                    return null;
-                  },
-                  builder: (field) {
-                    return InputDecorator(
-                      decoration: InputDecoration(
-                          enabledBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white)),
-                          errorText: field.errorText),
-                      child: BlocConsumer(
-                        bloc: homeBloc3,
-                        builder: (context, state) {
-                          if (state is AddMultipleImageLoaded) {
-                            return SizedBox(
-                              width: double.infinity,
-                              height: 150,
-                              child: CarouselSlider.builder(
-                                itemCount: state.files.length,
-                                itemBuilder: (context, index, value) {
-                                  final paths = state.files[index].path;
-
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            Sizes().width(context, 0.04)),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: Image.file(
-                                        File(paths ?? ""),
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                        height: 150,
+                      name: "location",
+                      builder: (field) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Sizes().width(context, 0.04),
+                          ),
+                          child: BlocConsumer(
+                            bloc: homeBloc2,
+                            builder: (context, state) {
+                              if (state is AddLocationLoaded) {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    SizedBox(
+                                      height: Sizes().height(context, 0.05),
+                                      child: Center(
+                                        child: Text(state.houseLocation
+                                                    .formatedAddress!.length <=
+                                                35
+                                            ? state
+                                                .houseLocation.formatedAddress!
+                                            : "${state.houseLocation.formatedAddress?.substring(0, 35)}..."),
                                       ),
                                     ),
-                                  );
-                                },
-                                options: CarouselOptions(
+                                    Space().width(context, 0.02),
+                                    GestureDetector(
+                                      onTap: () async {
+                                      
+          
+                                        final result = await buildSelectLocation(
+                                            context);
+                                        if (mounted) {
+                                           homeBloc2
+                                             .add(AddLocationEvent(params: result));                                          
+          
+                                        }                                                                               
+                                      },
+                                      child: SvgPicture.asset(
+                                        editSVG,
+                                        color: housePrimaryColor,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                              return InputDecorator(
+                                decoration: InputDecoration(
+                                    enabledBorder: const UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.white)),
+                                    errorText: field.errorText),
+                                child: DefaultButton(
+                                  label: "Add Location",
+                                  onTap: () async {
+                                   
+          
+                                    final result =
+                                        await buildSelectLocation(context);
+                                       
+                                    homeBloc2.add(AddLocationEvent(
+                                        params:result));
+                                    
+                                  },
+                                ),
+                              );
+                            },
+                            listener: (BuildContext context, state) {
+                              if (state is AddLocationLoaded) {
+                                houseLocation = state.houseLocation;
+                                setState(() {});
+                                field.didChange(houseLocation?.formatedAddress ?? "");
+                              }
+                              if (state is AddLocationError) {
+                                OKToast(child: Text(state.errorMessage));
+                              }
+                            },
+                          ),
+                        );
+                      }),
+                  Space().height(context, 0.02),
+          
+                  ToggleButtons(isSelected: const [], children: const []),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Sizes().width(context, 0.04)),
+                    child: Row(
+                      children: [
+                        const Text("House Image(s)"),
+                        Space().width(context, 0.03),
+                        GestureDetector(
+                          onTap: () {
+                            homeBloc3.add(
+                              AddMultipleImageEvent(
+                                params: NoParams(),
+                              ),
+                            );
+                          },
+                          child: SvgPicture.asset(
+                            editSVG,
+                            color: housePrimaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+          
+                  // Space().height(context, 0.005),
+                  FormBuilderField<List<String>>(
+                      name: "house_images",
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return fieldRequired;
+                        }
+          
+                        return null;
+                      },
+                      builder: (field) {
+                        return InputDecorator(
+                          decoration: InputDecoration(
+                              enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.white)),
+                              errorText: field.errorText),
+                          child: BlocConsumer(
+                            bloc: homeBloc3,
+                            builder: (context, state) {
+                              if (state is AddMultipleImageLoaded) {
+                                return SizedBox(
+                                  width: double.infinity,
                                   height: 150,
-                                  reverse: true,
-                                ),
-                              ),
-                            );
-                          }
-                          return Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: Sizes().width(context, 0.04)),
-                            child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: Sizes().width(context, 0.08)),
-                                width: 180,
-                                height: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: searchTextColor3,
-                                ),
-                                child: GestureDetector(
-                                    onTap: () {
-                                      homeBloc3.add(AddMultipleImageEvent(
-                                          params: NoParams()));
+                                  child: CarouselSlider.builder(
+                                    itemCount: state.files.length,
+                                    itemBuilder: (context, index, value) {
+                                      final paths = state.files[index].path;
+          
+                                      return Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal:
+                                                Sizes().width(context, 0.04)),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(5),
+                                          child: Image.file(
+                                            File(paths ?? ""),
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                            height: 150,
+                                          ),
+                                        ),
+                                      );
                                     },
-                                    child: SvgPicture.asset(cameraSVG))),
-                          );
-                        },
-                        listener: (BuildContext context, state) {
-                          if (state is AddMultipleImageError) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  state.errorMessage,
-                                ),
-                              ),
-                            );
-                            debugPrint(state.errorMessage);
-                          }
-                          if (state is AddMultipleImageLoaded) {
-                            for (int i = 0; i < state.files.length; i++) {
-                              images?.add(state.files[i].path!);
-                            }
-                            field.didChange(images);
-                          }
-                        },
-                      ),
-                    );
-                  }),
-              FormBuilderField<String>(
-                  name: "homeDescription",
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return fieldRequired;
-                    }
-                    if (value!.length <= 1) {
-                      return mustBeCharacters;
-                    }
-                    return null;
-                  },
-                  builder: (field) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: Sizes().width(context, 0.04)),
-                      child: DefaultTextArea(
-                        focusNode: FocusNode(),
-                        //height: 100,
-                        controller: descriptionController,
-                        hintText: "Enter home description",
-                        label: "Home Description",
-                        errorText: field.errorText,
-                        onTapOutSide: (value) {
-                        
-                          
-                        },
-                        onChanged: (p0) => field.didChange(p0),
-                      ),
-                    );
-                  }),
-
-              Space().height(context, 0.04),
-              const DefaultButton(
-                label: "",
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+                                    options: CarouselOptions(
+                                      height: 150,
+                                      reverse: true,
+                                    ),
+                                  ),
+                                );
+                              }
+                              return Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Sizes().width(context, 0.04)),
+                                child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: Sizes().width(context, 0.08)),
+                                    width: 180,
+                                    height: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: searchTextColor3,
+                                    ),
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          homeBloc3.add(AddMultipleImageEvent(
+                                              params: NoParams()));
+                                        },
+                                        child: SvgPicture.asset(cameraSVG))),
+                              );
+                            },
+                            listener: (BuildContext context, state) {
+                              if (state is AddMultipleImageError) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      state.errorMessage,
+                                    ),
+                                  ),
+                                );
+                                debugPrint(state.errorMessage);
+                              }
+                              if (state is AddMultipleImageLoaded) {
+                                for (int i = 0; i < state.files.length; i++) {
+                                  images?.add(state.files[i].path!);
+                                }
+                                field.didChange(images);
+                              }
+                            },
+                          ),
+                        );
+                      }),
+                  FormBuilderField<String>(
+                      name: "homeDescription",
+                      validator: (value) {
+                        if (value?.isEmpty ?? true) {
+                          return fieldRequired;
+                        }
+                        if (value!.length <= 1) {
+                          return mustBeCharacters;
+                        }
+                        return null;
+                      },
+                      builder: (field) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: Sizes().width(context, 0.04)),
+                          child: DefaultTextArea(
+                            focusNode: FocusNode(),
+                            //height: 100,
+                            controller: descriptionController,
+                            hintText: "Enter home description",
+                            label: "Home Description",
+                            errorText: field.errorText,
+                            onTapOutSide: (value) {
+                            
+                              
+                            },
+                            onChanged: (p0) => field.didChange(p0),
+                          ),
+                        );
+                      }),
+          
+                  Space().height(context, 0.04),
+                  const DefaultButton(
+                    label: "",
+                  )
+                ],
+              ),
+            ),
+          
+      )
+      ));
   }
 }

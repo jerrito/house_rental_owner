@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -338,12 +340,12 @@ class _EditHomePageState extends State<EditHomePage> {
                                             child: Center(
                                               child: Text(widget
                                                           .house
-                                                          .formatedAddress!
+                                                          .houseLocation.formatedAddress!
                                                           .length <=
                                                       35
                                                   ? widget
-                                                      .house.formatedAddress!
-                                                  : "${widget.house.formatedAddress?.substring(0, 35)}..."),
+                                                      .house.houseLocation.formatedAddress!
+                                                  : "${widget.house.houseLocation.formatedAddress?.substring(0, 35)}..."),
                                             ),
                                           ),
                                           Space().width(context, 0.02),
@@ -354,8 +356,7 @@ class _EditHomePageState extends State<EditHomePage> {
                                                       context);
                                               if (!mounted) return;
 
-                                              print(result
-                                                  as Map<String, dynamic>);
+                                              
                                               homeBloc2.add(AddLocationEvent(
                                                   params: result));
                                             },

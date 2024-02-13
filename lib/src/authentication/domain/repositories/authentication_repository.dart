@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 // data/repository/authentication_repository.dart
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:house_rental_admin/src/authentication/data/models/owner_model.dart';
 import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart';
 
 abstract class AuthenticationRepository {

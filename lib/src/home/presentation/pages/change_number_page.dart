@@ -9,7 +9,6 @@ import 'package:house_rental_admin/core/widgets/bottom_sheet.dart';
 import 'package:house_rental_admin/locator.dart';
 import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart';
 import 'package:house_rental_admin/src/authentication/presentation/bloc/authentication_bloc.dart';
-import 'package:house_rental_admin/src/authentication/presentation/widgets/default_button.dart';
 import 'package:house_rental_admin/src/authentication/presentation/widgets/default_textfield.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:string_validator/string_validator.dart';
@@ -168,7 +167,7 @@ class _ChangeNumberPageState extends State<ChangeNumberPage> {
                 state.errorMessage,
               ),
             );
-            print(state.errorMessage);
+           
           }
 
           if (state is GetUserError) {
@@ -179,10 +178,12 @@ class _ChangeNumberPageState extends State<ChangeNumberPage> {
             authBloc.add(
               UpdateUserEvent(params: params),
             );
+
+            context.goNamed("profile");
           }
 
           if (state is GetUserLoaded) {
-           const  OKToast(
+            const OKToast(
               child: Text(
                 "Number already registered",
               ),

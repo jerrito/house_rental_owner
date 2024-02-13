@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -47,11 +49,11 @@ buildSelectLocation(BuildContext context) {
                           bloc: homeBloc,
                           listener: (context, state) {
                             if (state is PlaceSearchLoaded) {
-                              print(state.placeSearch);
+                             
                             }
 
                             if (state is PlaceSearchError) {
-                              print(state.errorMessage);
+                             
                             }
                           },
                           builder: (context, state) {

@@ -96,11 +96,16 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                       phoneNumber: "+233${phoneNumberController.text}"),
                 );
               } else {
-                print("Entered number not equal to old number");
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Entered number not equal to old number")));
               }
             }
             if (state is CheckPhoneNumberChangeError) {
-              print(state.errorMessage);
+              if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+                    content: Text(state.errorMessage)));
+              
             }
           },
           builder: (context, state) {
@@ -171,7 +176,9 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                         Text(widget.oldNumberString!=null?"Enter Old Phone Number": "Enter Phone Number"),
+                        Text(widget.oldNumberString != null
+                            ? "Enter Old Phone Number"
+                            : "Enter Phone Number"),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [

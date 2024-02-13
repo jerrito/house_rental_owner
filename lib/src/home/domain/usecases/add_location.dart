@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:house_rental_admin/core/usecase/usecase.dart';
-import 'package:house_rental_admin/src/home/data/models/house_model.dart';
 import 'package:house_rental_admin/src/home/domain/entities/house.dart';
 import 'package:house_rental_admin/src/home/domain/repository/home_repository.dart';
 
