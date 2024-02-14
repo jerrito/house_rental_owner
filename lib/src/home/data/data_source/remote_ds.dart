@@ -9,7 +9,7 @@ import 'package:house_rental_admin/src/home/data/models/place_search_model.dart'
 import "package:http/http.dart" as http;
 
 abstract class HomeRemoteDataSource {
-  Future<DocumentReference<HouseDetailModel>?> addHouse(
+  Future<DocumentReference<Map<String, dynamic>>?> addHouse(
       Map<String, dynamic> params);
 
   Future<QuerySnapshot<HouseDetailModel>> getAllHouses(
@@ -34,18 +34,18 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource {
         toFirestore: (houseDetail, _) => houseDetail.toMap(),
       );
   @override
-  Future<DocumentReference<HouseDetailModel>> addHouse(
+  Future<DocumentReference<Map<String, dynamic>>?> addHouse(
       Map<String, dynamic> params) async {
     final response = await FirebaseFirestore.instance
         // .collection('houseRentalAdminAccount')
         // .doc(params["id"])
         .collection("houses")
-        .withConverter<HouseDetailModel>(
-          fromFirestore: (snapshot, _) =>
-              HouseDetailModel.fromJson(snapshot.data()!),
-          toFirestore: (house, _) => house.toMap(),
-        )
-        .add(HouseDetailModel.fromJson(params));
+        // .withConverter<HouseDetailModel>(
+        //   fromFirestore: (snapshot, _) =>
+        //       HouseDetailModel.fromJson(snapshot.data()!),
+        //   toFirestore: (house, _) => house.toMap(),
+        // )
+        .add(params);
     return response;
   }
 

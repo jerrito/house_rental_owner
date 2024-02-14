@@ -39,15 +39,17 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
         if (value == 1) {
           widget.index = value;
 
-          // setState(() {});
-          // context.goNamed("addHome");
-        }
-        if (value == 2) {
-          widget.index = value;
           setState(() {});
-          context.goNamed("editHome");
+          //  context.pushNamed("addHome", 
+          //       queryParameters: {
+          //         "id": owner?.id ?? "",
+          //         "name": "${owner?.firstName} ${owner?.lastName}",
+          //         "phoneNumber": owner?.phoneNumber ?? ""
+          //       });
+          context.goNamed("addHome");
         }
-        if (value == 3) {
+        
+        if (value == 2) {
           widget.index == value;
           setState(() {});
           context.goNamed("profile");
@@ -56,7 +58,6 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
       items: [
         buildNav(callSVG, "Home"),
         buildNav(bookMarkSVG, "Add"),
-        buildNav(editSVG, "Edit"),
         buildNav(userSVG, "Profile"),
       ],
     );

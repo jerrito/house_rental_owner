@@ -59,6 +59,7 @@ class _EditHomePageState extends State<EditHomePage> {
     for (int i = 0; i < widget.house.images!.length; i++) {
       networkImages.add(widget.house.images![i]);
     }
+    houseLocation = widget.house.houseLocation;
   }
 
   @override
@@ -75,6 +76,7 @@ class _EditHomePageState extends State<EditHomePage> {
               "bed_room_count": bedRoomController,
               "bath_room_count": bathRoomController,
               "images": state.imageURL,
+              "house_details": houseLocation?.toMap(),
               "id": widget.id,
             };
             homeBloc.add(UpdateHouseEvent(params: params));
@@ -94,17 +96,19 @@ class _EditHomePageState extends State<EditHomePage> {
             onPressed: () {
               if (formKey.currentState!.saveAndValidate() == true) {
                 if (networkImages.isNotEmpty) {
-              Map<String, dynamic> params = {
-              "name": homeNameController,
-              "description": descriptionController,
-              "amount": amountController,
-              "bed_room_count": bedRoomController,
-              "bath_room_count": bathRoomController,              
-              "id": widget.id,
-                };
-                homeBloc.add(UpdateHouseEvent(params: params),);
-                } 
-                else {
+                  Map<String, dynamic> params = {
+                    "name": homeNameController,
+                    "description": descriptionController,
+                    "amount": amountController,
+                    "bed_room_count": bedRoomController,
+                    "bath_room_count": bathRoomController,
+                    "house_details": houseLocation?.toMap(),
+                    "id": widget.id,
+                  };
+                  homeBloc.add(
+                    UpdateHouseEvent(params: params),
+                  );
+                } else {
                   Map<String, dynamic> params = {
                     "phone_number": widget.house.houseName,
                     "path": localImages,
@@ -112,7 +116,6 @@ class _EditHomePageState extends State<EditHomePage> {
                   };
                   homeBloc.add(UpLoadMultipleImageEvent(params: params));
                 }
-              
               }
             },
           );
@@ -340,12 +343,13 @@ class _EditHomePageState extends State<EditHomePage> {
                                             child: Center(
                                               child: Text(widget
                                                           .house
-                                                          .houseLocation.formatedAddress!
+                                                          .houseLocation!
+                                                          .formatedAddress!
                                                           .length <=
                                                       35
-                                                  ? widget
-                                                      .house.houseLocation.formatedAddress!
-                                                  : "${widget.house.houseLocation.formatedAddress?.substring(0, 35)}..."),
+                                                  ? widget.house.houseLocation!
+                                                      .formatedAddress!
+                                                  : "${widget.house.houseLocation?.formatedAddress?.substring(0, 35)}..."),
                                             ),
                                           ),
                                           Space().width(context, 0.02),
@@ -356,7 +360,6 @@ class _EditHomePageState extends State<EditHomePage> {
                                                       context);
                                               if (!mounted) return;
 
-                                              
                                               homeBloc2.add(AddLocationEvent(
                                                   params: result));
                                             },
@@ -518,12 +521,12 @@ class _EditHomePageState extends State<EditHomePage> {
                           padding: EdgeInsets.symmetric(
                               horizontal: Sizes().width(context, 0.04)),
                           child: DefaultTextArea(
-                              initialValue: descriptionController,
+                              initialValue: widget.house.description,
                               hintText: "Enter home description",
                               label: "Home Description",
                               errorText: field.errorText,
                               onChanged: (p0) {
-                                field.didChange((p0!));
+                                field.didChange(p0!);
                                 descriptionController = p0;
                               }),
                         );

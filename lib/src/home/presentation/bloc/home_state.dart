@@ -40,7 +40,7 @@ class AddMultipleImageError extends HomeState {
 }
 
 class AddHomeLoaded extends HomeState {
-  final DocumentReference<HouseDetailModel>? houses;
+  final DocumentReference<Map<String, dynamic>>? houses;
   AddHomeLoaded({required this.houses});
 }
 

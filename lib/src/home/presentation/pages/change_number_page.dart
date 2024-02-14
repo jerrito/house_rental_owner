@@ -52,35 +52,11 @@ class _ChangeNumberPageState extends State<ChangeNumberPage> {
             key: formKey,
             child: Column(children: [
               Space().height(context, 0.02),
-              FormBuilderField<String>(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                name: "phoneNumber",
-                validator: (value) {
-                  if (value?.isEmpty ?? true) {
-                    return fieldRequired;
-                  }
-                  if (!isNumeric(value!)) {
-                    return "Only numbers required";
-                  }
-                  if (!isLength(value, 9, 9)) {
-                    return 'Nine numbers required';
-                  }
-
-                  return null;
-                },
-                onChanged: (value) {
-                  if (value!.startsWith("0", 0)) {
-                    phoneNumberController.text = value.substring(1);
-                  }
-                },
-                builder: (field) => DefaultTextfield(
-                  enabled: false,
-                  initialValue: widget.phoneNumber,
-                  textInputType: TextInputType.number,
-                  label: "Old Number",
-                  errorText: field.errorText,
-                  onChanged: (p0) => field.didChange(p0),
-                ),
+              DefaultTextfield(
+                enabled: false,
+                initialValue: widget.phoneNumber,
+                textInputType: TextInputType.number,
+                label: "Old Number",
               ),
               Space().height(context, 0.02),
               FormBuilderField<String>(
@@ -167,7 +143,6 @@ class _ChangeNumberPageState extends State<ChangeNumberPage> {
                 state.errorMessage,
               ),
             );
-           
           }
 
           if (state is GetUserError) {
@@ -178,8 +153,7 @@ class _ChangeNumberPageState extends State<ChangeNumberPage> {
             authBloc.add(
               UpdateUserEvent(params: params),
             );
-
-            context.goNamed("profile");
+            
           }
 
           if (state is GetUserLoaded) {
@@ -196,6 +170,13 @@ class _ChangeNumberPageState extends State<ChangeNumberPage> {
           }
         },
         builder: (context, state) {
+          if (state is GetUserLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is UpdateUserLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
           return bottomSheetButton(
               onPressed: () {
                 if (formKey.currentState?.validate() == true) {

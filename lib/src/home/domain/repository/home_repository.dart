@@ -10,7 +10,7 @@ abstract class HomeRepository {
   Future<Either<String, XFile>> getProfileImageGallery();
   Future<Either<String, XFile>> getProfileImageCamera();
   Future<Either<String, List<PlatformFile>>> addMultipleImage();
-  Future<Either<String, DocumentReference<HouseDetailModel>?>> addHouse(
+  Future<Either<String, DocumentReference<Map<String, dynamic>>?>> addHouse(
       Map<String, dynamic> params);
 
   Future<Either<String, QuerySnapshot<HouseDetail>>> getAllHouses(

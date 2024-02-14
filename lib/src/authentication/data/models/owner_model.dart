@@ -18,7 +18,8 @@ class OwnerModel extends Owner {
     required super.uid,
   });
 
-  factory OwnerModel.fromJson(Map<String, dynamic>? json) => OwnerModel(
+  factory OwnerModel.fromJson(Map<String, dynamic>? json) =>
+   OwnerModel(
         firstName: json?["first_name"],
         lastName: json?["last_name"],
         phoneNumber: json?["phone_number"],

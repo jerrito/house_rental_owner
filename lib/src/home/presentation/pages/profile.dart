@@ -37,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(title: const Text("Profile")),
       bottomNavigationBar: BottomNavigationBarWidget(
-        index: 3,
+        index: 2,
       ),
       body: SingleChildScrollView(
         child: BlocConsumer(

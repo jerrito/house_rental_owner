@@ -111,7 +111,9 @@ class DefaultTextArea extends StatelessWidget {
         SizedBox(
           height:100,width:double.infinity,
           child: TextFormField(
+
              focusNode:focusNode,
+             initialValue:initialValue,
             expands: true,
             maxLines: null,
             minLines: null,

@@ -5,7 +5,7 @@ class HouseDetail extends Equatable {
   final String? houseName, description, category;
   final num? amount, bedRoomCount, bathRoomCount;
   final bool? isAvailable;
-  final HouseLocation houseLocation;
+  final HouseLocation? houseLocation;
   final List<String>? images;
   final Owner? owner;
   const HouseDetail({
@@ -45,4 +45,11 @@ class HouseLocation extends Equatable {
 
   @override
   List<Object?> get props => [formatedAddress, lat, lng];
+
+Map<String,dynamic>  toMap()=>
+  {
+    "lat":lat,
+    "lng":lng,
+    "format_address":formatedAddress,
+  };
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:house_rental_admin/src/authentication/data/models/owner_model.dart';
 import 'package:house_rental_admin/src/home/domain/entities/house.dart';
 
@@ -23,7 +25,7 @@ class HouseDetailModel extends HouseDetail {
         amount: json?["amount"],
         images: List<String>.from(json?["images"].map((e) => e)),
         bedRoomCount: json?["bed_room_count"],
-        bathRoomCount: json?["bath_room_count"],
+        bathRoomCount: json?["bath_room_count"] as num,
         owner:OwnerModel.fromJson(json?["owner"]),
         isAvailable: json?["is_available"],
         category: json?["category"],     
@@ -56,6 +58,7 @@ class HouseLocationModel extends HouseLocation {
           lat: json?["lat"],
           lng: json?["lng"]);
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       "formatted_address": formatedAddress,
