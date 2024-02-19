@@ -112,3 +112,12 @@ class GetUserEvent extends AuthenticationEvent {
 }
 
 
+class GetProfileGalleryEvent extends AuthenticationEvent {
+  final NoParams params;
+  GetProfileGalleryEvent({required this.params});
+}
+
+class GetProfileCameraEvent extends AuthenticationEvent {
+  final NoParams params;
+  GetProfileCameraEvent({required this.params});
+}

@@ -187,6 +187,7 @@ class _DocumentSubmissionPageState extends State<DocumentSubmissionPage> {
                                                 buildProfileChangeBottomSheet(
                                                   context,
                                                   homeBloc,
+                                                  authBloc,
                                                 );
                                               },
                                               child: SvgPicture.asset(editSVG,
@@ -315,6 +316,7 @@ class _DocumentSubmissionPageState extends State<DocumentSubmissionPage> {
                                                 buildHouseDocumentChangeBottomSheet(
                                                   context,
                                                   homeBloc,
+                                                  authBloc,
                                                 );
                                                
                                               },

@@ -20,3 +20,4 @@ const icMessageSVG = "lib/assets/svgs/IC_Message.svg";
 const noWIFISVG = "lib/assets/svgs/wifi-off.svg";
 const cameraSVG = "lib/assets/svgs/camera.svg";
 const ghanaSVG = "lib/assets/svgs/ghana.svg";
+const cancelSVG = "lib/assets/svgs/x.svg";

@@ -16,6 +16,7 @@ import 'package:house_rental_admin/src/home/presentation/pages/edit_home.dart';
 import 'package:house_rental_admin/src/home/presentation/pages/home_page.dart';
 import 'package:house_rental_admin/src/home/presentation/pages/profile.dart';
 import 'package:house_rental_admin/src/home/presentation/pages/select_from_map.dart';
+import 'package:house_rental_admin/src/home/presentation/pages/update_profile_page.dart';
 
 
 GoRouter goRouter() {
@@ -132,6 +133,13 @@ GoRouter goRouter() {
               builder: (context, state) {
                 return ProfilePage(owner: OwnerModel.fromJson(const {}));
               },
+              routes: [
+                GoRoute(path: "updateProfile",name: "updateProfile",
+                builder: (context, state) =>
+                 UpdateProfilePage(
+                  imagePath: state.uri.queryParameters["imagePath"].toString(),
+                 ),)
+              ]
             ),
           ],
         ),

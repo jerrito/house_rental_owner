@@ -47,6 +47,8 @@ Future<void> initDependencies() async {
 
   locator.registerFactory(
     () => AuthenticationBloc(
+       getProfileCamera: locator(),
+      getProfileGallery: locator(),
       firebaseAuth: locator(),
       signup: locator(),
       verifyNumber: locator(),

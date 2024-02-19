@@ -8,6 +8,7 @@ import 'package:house_rental_admin/src/authentication/domain/entities/owner.dart
 import 'package:house_rental_admin/src/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:house_rental_admin/src/home/presentation/bloc/home_bloc.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/bottom_nav_bar.dart';
+import 'package:house_rental_admin/src/home/presentation/widgets/build_profile_change.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/profile_list.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/show_dialog.dart';
 import 'package:house_rental_admin/src/home/presentation/widgets/show_dialog_name.dart';
@@ -31,6 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String? newRepeatValue;
   String? newChangeValue;
   String? oldValue;
+  Owner? owner;
   @override
   Widget build(BuildContext context) {
     authBloc.add(const GetCacheDataEvent());
@@ -43,118 +45,124 @@ class _ProfilePageState extends State<ProfilePage> {
         child: BlocConsumer(
           bloc: authBloc,
           listener: (context, state) {
-            // TODO: implement listener
+            if (state is GetCacheDataLoaded) {
+              owner = state.owner;
+            }
           },
           builder: (context, state) {
             if (state is GetCacheDataLoaded) {
-              final owner = state.owner;
               return Column(
                 children: [
                   Stack(
-                    alignment:Alignment.bottomRight,
+                    alignment: Alignment.bottomRight,
                     children: [
                       Container(
-                          height: Sizes().height(context, 0.2),
-                          width: Sizes().width(context, 0.4),
-                          decoration: BoxDecoration(
-                              color: Colors.black26,
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: Image.network(owner.profileURL ?? "")
-                                      .image),),),
-                                     GestureDetector(
-                                      onTap:(){
+                        height: Sizes().height(context, 0.2),
+                        width: Sizes().width(context, 0.4),
+                        decoration: BoxDecoration(
+                          color: Colors.black26,
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image:
+                                  Image.network(owner?.profileURL ?? "").image),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          final data = await buildProfileChangeBottomSheet(
+                              context, homeBloc,
+                              authBloc,
+                              owner?.id,
+                              owner?.phoneNumber);
 
-                                      },
-                                       child:const  Icon(
-                                        size:30,
-                                          Icons.camera_alt_outlined
-                                        ),
-                                     )
+                          if (data == "updated") {
+                            authBloc.add(const GetCacheDataEvent());
+                          }
+                        },
+                        child: const Icon(size: 40, Icons.camera_alt_outlined),
+                      )
                     ],
                   ),
                   ProfileList(
                       onPressed: () async {
                         await showProfileNameDialog(
-                            context,
-                            owner.firstName ?? "",
-                            owner.lastName ?? "",
-                            "First Name",
-                            "Last Name",
-                            authBloc,
-                            owner.id ?? "",
-                            );
-
-                       authBloc.add(const GetCacheDataEvent());
-                      },
-                      data: "${owner.firstName} ${owner.lastName}"),
-                  ProfileList(
-                      onPressed: () async {
-                        await showProfileDialog(context, owner.email ?? "",
-                            "Email", authBloc, owner.id ?? "", "email");
-                        authBloc.add(const GetCacheDataEvent());
-                      },
-                      data: "${owner.email}"),
-                  ProfileList(
-                      onPressed: () async {
-                        await context.pushNamed(
-                          "phoneNumber",
-                          queryParameters: {
-                            "isLogin":"false",
-                            "oldNumberString":owner.phoneNumber
-                          }
+                          context,
+                          owner?.firstName ?? "",
+                          owner?.lastName ?? "",
+                          "First Name",
+                          "Last Name",
+                          authBloc,
+                          owner?.id ?? "",
                         );
+
                         authBloc.add(const GetCacheDataEvent());
                       },
-                      data: "${owner.phoneNumber}"),
+                      data: "${owner?.firstName} ${owner?.lastName}"),
+                  ProfileList(
+                      onPressed: () async {
+                        await showProfileDialog(context, owner?.email ?? "",
+                            "Email", authBloc, owner?.id ?? "", "email");
+                        authBloc.add(const GetCacheDataEvent());
+                      },
+                      data: "${owner?.email}"),
+                  ProfileList(
+                      onPressed: () async {
+                        await context.pushNamed("phoneNumber",
+                            queryParameters: {
+                              "isLogin": "false",
+                              "oldNumberString": owner?.phoneNumber
+                            });
+                        authBloc.add(const GetCacheDataEvent());
+                      },
+                      data: "${owner?.phoneNumber}"),
                   ProfileList(
                       onPressed: () async {
                         await showProfileDialog(
                             context,
-                            owner.townORCity ?? "",
+                            owner?.townORCity ?? "",
                             "Town Or City",
                             authBloc,
-                            owner.id ?? "",
+                            owner?.id ?? "",
                             "town_or_city");
                         authBloc.add(const GetCacheDataEvent());
                       },
-                      data: "${owner.townORCity}"),
+                      data: "${owner?.townORCity}"),
                   ProfileList(
                       onPressed: () async {
                         await showProfileDialog(
                             context,
-                            owner.houseGPSAddress ?? "",
+                            owner?.houseGPSAddress ?? "",
                             "House GPS Address",
                             authBloc,
-                            owner.id ?? "",
+                            owner?.id ?? "",
                             "house_GPS_address");
                         authBloc.add(const GetCacheDataEvent());
                       },
-                      data: "${owner.houseGPSAddress}"),
+                      data: "${owner?.houseGPSAddress}"),
                   ProfileList(
                       onPressed: () async {
                         await showProfileDialog(
                           context,
-                          owner.role ?? "",
+                          owner?.role ?? "",
                           "Role",
                           authBloc,
-                          owner.id ?? "",
+                          owner?.id ?? "",
                           "role",
                         );
                         authBloc.add(const GetCacheDataEvent());
                       },
-                      data: "${owner.role}"),
+                      data: "${owner?.role}"),
                   ProfileList(
                       onPressed: () async {
                         await showPinChangeProfileDialog(
                             context,
-                            owner.password ?? "",
+                            owner?.password ?? "",
                             "Password",
                             authBloc,
-                            owner.id ?? "",
+                            owner?.id ?? "",
                             "password",
-                            owner.email ?? "",
+                            owner?.email ?? "",
                             oldValue ?? "",
                             newChangeValue ?? "",
                             newRepeatValue ?? "",

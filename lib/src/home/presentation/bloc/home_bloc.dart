@@ -44,21 +44,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     required this.getPlaceByLatLng,
     required this.addLocation,
   }) : super(HomeInitState()) {
-    //!GET PROFILE Camera
-    on<GetProfileCameraEvent>((event, emit) async {
-      final response = await getProfileCamera.call(event.params);
-
-      emit(response.fold((error) => GetProfileError(errorMessage: error),
-          (response) => GetProfileLoaded(file: response)));
-    });
-
-    //!GET PROFILE Gallery
-    on<GetProfileGalleryEvent>((event, emit) async {
-      final response = await getProfileGallery.call(event.params);
-
-      emit(response.fold((error) => GetProfileError(errorMessage: error),
-          (response) => GetProfileLoaded(file: response)));
-    });
+    
 
     //!GET HOUSE DOCUMENT Camera
     on<GetHouseDocumentCameraEvent>((event, emit) async {

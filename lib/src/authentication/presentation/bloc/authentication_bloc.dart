@@ -16,6 +16,9 @@ import 'package:house_rental_admin/src/authentication/domain/usecases/up_load_im
 import 'package:house_rental_admin/src/authentication/domain/usecases/update_user.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/verify_otp.dart';
 import 'package:house_rental_admin/src/authentication/domain/usecases/verify_number.dart';
+import 'package:house_rental_admin/src/home/domain/usecases/get_profile_camera.dart';
+import 'package:house_rental_admin/src/home/domain/usecases/get_profile_gallery.dart';
+import 'package:image_picker/image_picker.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -35,10 +38,14 @@ class AuthenticationBloc
   final UpLoadImage upLoadImage;
   final CheckPhoneNumberChange checkPhoneNumberChange;
   final GetUser getUser;
+  final GetProfileCamera getProfileCamera;
+  final GetProfileGallery getProfileGallery;
   AuthenticationBloc({
     required this.verifyPhoneNumberLogin,
     required this.signup,
     required this.firebaseAuth,
+    required this.getProfileCamera,
+    required this.getProfileGallery,
     required this.verifyNumber,
     required this.verifyOTP,
     required this.getCacheData,
@@ -243,6 +250,22 @@ class AuthenticationBloc
           ),
         ),
       );
+    });
+
+    //!GET PROFILE Camera
+    on<GetProfileCameraEvent>((event, emit) async {
+      final response = await getProfileCamera.call(event.params);
+
+      emit(response.fold((error) => GetProfileError(errorMessage: error),
+          (response) => GetProfileLoaded(file: response)));
+    });
+
+    //!GET PROFILE Gallery
+    on<GetProfileGalleryEvent>((event, emit) async {
+      final response = await getProfileGallery.call(event.params);
+
+      emit(response.fold((error) => GetProfileError(errorMessage: error),
+          (response) => GetProfileLoaded(file: response)));
     });
   }
 }

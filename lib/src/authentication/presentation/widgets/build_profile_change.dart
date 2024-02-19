@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:house_rental_admin/core/size/sizes.dart';
 import 'package:house_rental_admin/core/spacing/whitspacing.dart';
 import 'package:house_rental_admin/core/usecase/usecase.dart';
+import 'package:house_rental_admin/src/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:house_rental_admin/src/authentication/presentation/widgets/default_button.dart';
 import 'package:house_rental_admin/src/home/presentation/bloc/home_bloc.dart';
 
 buildProfileChangeBottomSheet(
   BuildContext context,
   HomeBloc homeBloc,
+  AuthenticationBloc authBloc,
 ) {
   return showModalBottomSheet(
       context: context,
@@ -22,15 +24,26 @@ buildProfileChangeBottomSheet(
                 Space().height(context, 0.02),
                 const Text("Add Profile Picture"),
                 Space().height(context, 0.04),
-                DefaultButton(
-                    label: "Camera",
-                    onTap: () {
-                      Navigator.pop(context);
-                      homeBloc.add(GetProfileCameraEvent(params: NoParams()));
-                    }),
+               BlocConsumer(
+                    bloc: authBloc,
+                    listener: (context, state) {
+                      if (state is GetProfileError) {
+                        debugPrint(state.errorMessage);
+                      }
+                      if (state is GetProfileLoaded) {}
+                    },
+                    builder: (context, state) {
+                      return DefaultButton(
+                        label: "Camera",
+                        onTap: () {
+                          Navigator.pop(context);
+                          authBloc.add(GetProfileCameraEvent(params: NoParams()));
+                        });
+                  }
+                ),
                 Space().height(context, 0.02),
                 BlocConsumer(
-                    bloc: homeBloc,
+                    bloc: authBloc,
                     listener: (context, state) {
                       if (state is GetProfileError) {
                         debugPrint(state.errorMessage);
@@ -42,7 +55,7 @@ buildProfileChangeBottomSheet(
                           label: "Gallery",
                           onTap: () {
                             //context.pop();
-                            homeBloc.add(
+                            authBloc.add(
                                 GetProfileGalleryEvent(params: NoParams()));
 
                             // Navigator.pop(context);

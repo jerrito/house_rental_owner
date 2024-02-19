@@ -131,3 +131,15 @@ class GetUserError extends AuthenticationState {
 }
 
 class GetUserLoading extends AuthenticationState {}
+
+
+class GetProfileLoaded extends AuthenticationState {
+  final XFile file;
+
+  GetProfileLoaded({required this.file});
+}
+
+class GetProfileError extends AuthenticationState {
+  final String errorMessage;
+  GetProfileError({required this.errorMessage});
+}

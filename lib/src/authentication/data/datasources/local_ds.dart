@@ -43,11 +43,11 @@ class AuhenticationLocalDataSourceImpl
           params["phone_number"],
         );
 
-    final upLoadTask = upLoadPath.putFile(File(params["path"]));
+    final upLoadTask = upLoadPath.child(params["path"]).putFile(File(params["path"]));
 
     String? returnURL;
     await upLoadTask.whenComplete(
-      () => upLoadPath.getDownloadURL().then((value) => returnURL = value),
+      () => upLoadPath.child(params["path"]).getDownloadURL().then((value) => returnURL = value),
     );
 
     return returnURL!;
